@@ -21,8 +21,9 @@ class Piece {
 
     die() {
         if (this.type == "ghost") {     //If ghost pawn (En Passant)
-            if (game.p1Turn != this.white) {    //If it's not owned by the current player (has been actively killed)
-                game.board[this.originatorX][this.originatorY].die();   //Kill the pawn that created it too
+            if (game.p1Turn != this.white) {    //If it's not owned by the current player
+                                                //(has been actively killed)
+                game.board[this.originatorY][this.originatorX].die();   //Kill the originator
             }
         }
         if (!this.white) {  //If black piece
@@ -34,11 +35,57 @@ class Piece {
         this.x = -1;    //Negative coordinates mark a piece
         this.y = -1;    //for death (see Game.cleanup method)
     }
+    
+    cardinalMove() {
+        moves = [];
+        for (i = this.x * -1; i < 8 - this.x; i++) {
+            if (i != 0) {
+                moves.append([0,i]);
+            }
+        }
+        for (j = this.y * -1; j < 8 - this.x; j++) {
+            if (j != 0) {
+                moves.append([j,0]);
+            }
+        }
+        return moves
+    }
+
+    diagonalMove() {
+        moves = [];
+        for (k = 1; k < 8) {
+            for (horMultiplier = -1; horMultiplier < 2; horMultiplier++) {
+                for (vertMultiplier = -1; vertMultiplier < 2; vertMultiplier++) {
+                    if (horMultiplier != 0 && vertMultiplier != 0) {
+                    //Makes sure no stationary move is appended
+                        i = k * horMultiplier;
+                        j = k * vertMultiplier;
+
+                        newX = this.x + i;
+                        newY = this.y + j;
+
+                        if (newX <= 7 && newX >= 0 && newY <= 7 && newY >= 0) {
+                            moves.append([j, i]);
+                        }
+                    }
+                }
+            }
+        }
+        return moves
+    }
 
     move(j, i) {
         if (this.getValidMoves().includes([j, i])) {
             newX = this.x + i;
             newY = this.y + j;
+            if (!this.hasMoved) {
+                if (this.type == "pawn" && Math.abs(j) == 2) {
+                //If this is a pawn moving two spaces
+                    this.createGhostPawn(j);
+                    //Make a ghost pawn at the space if moved from
+                }
+                this.hasMoves = true;
+            }
             if (game.board[newY][newX] != null) {
                 game.board[newY][newX].die();
             }
