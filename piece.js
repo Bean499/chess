@@ -106,7 +106,12 @@ class Piece {
                 toDelete.append(moves[i]);
             }
         }
-        for (i = 0; i < toDelete.length; i++) {
+        for (i = toDelete.length; i >= 0; i--) {
+        //This probably looks like a really weird for loop
+        //It goes backwards through the list of items to delete
+        //If it went forwards then the indices in toDelete would become
+        //invalid due to the items in moves moving forwards, and their
+        //indicies changing - going backwards means that this doesn't happen
             moves.splice(i, 1);
         }
     }
@@ -155,6 +160,72 @@ class Piece {
     }
 
     getValidMoves() {
-        //Do it later
+        moves = this.removeOOB(this.movePattern());
+        kills = this.removeOOB(this.killPattern());
+        if (this.type == "knight") {
+            return moves
+        }
+        else if (this.type == "king") {
+            //Castle check goes here
+        }
+        else {
+            //Sort moves into directions
+            moves = sortMoves(moves);
+            kills = sortMoves(kills);
+            for (j = 0; j < 8; j++) {
+            //For each direction
+                movesToDelete = [];
+                blocked = false;
+                for (i = 0; i < moves[j].length; i ++); {
+                //For each move in current direction
+                    newX = this.x + moves[j][i][1];
+                    newY = this.y + moves[j][i][0];
+                    if (game.board[newY][newX] != null || blocked) {
+                    //If the new space is occupied, or if this direction is blocked
+                        blocked = true;
+                        movesToDelete.append(moves[j][i]);
+                    }
+                }
+                killsToDelete = [];
+                blocked = false
+                for (i = 0; i < kills[j].length; i ++); {
+                //For each move in current direction
+                    newX = this.x + kills[j][i][1];
+                    newY = this.y + kills[j][i][0];
+                    if (game.board[newY][newX] == null || blocked) {
+                    //If the new space isn't occupied, remove the kill
+                    //but don't mark the direction as blocked
+                        movesToDelete.append(moves[j][i]);
+                    }
+                    else if (game.board[newY][newX].white == this.white) {
+                    //If the new space is occupied by an ally
+                        killsToDelete.append(moves[j][i]);
+                        blocked = true;
+                    }
+                    else {
+                    //If the new space is occupied by an enemy
+                        blocked = true;
+                        //Mark the direction as blocked but don't remove the kill
+                    }
+                }
+                //Two more backwards for loops, like in Piece.removeOOB
+                for (i = movesToDelete.length; i >= 0; i--) {
+                    moves.splice(i, 1);
+                }
+                for (i = killsToDelete.length; i >= 0; i--) {
+                    kills.splice(i, 1);
+                }
+            }
+        }
+        validMoves = [];
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < moves[i].length; j++) {
+                validMoves.append(moves[i][j]);
+            }
+            for (j = 0; j < kills[i].length; j++) {
+                validMoves.append(kills[i][j]);
+            }
+        }
+        return validMoves
     }
 }
