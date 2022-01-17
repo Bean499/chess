@@ -1,4 +1,6 @@
 //Moves are in the format [j,i] which are unit vectors up/right respectively
+//Don't forget that the bottom row of the board is index 7
+//So negative values of j move upwards, positive values move downwards
 
 class Piece {
     constructor(points, type, white, x, y) {
@@ -84,7 +86,7 @@ class Piece {
                     this.createGhostPawn(j);
                     //Make a ghost pawn at the space if moved from
                 }
-                this.hasMoves = true;
+                this.hasMoved = true;
             }
             if (game.board[newY][newX] != null) {
                 game.board[newY][newX].die();
