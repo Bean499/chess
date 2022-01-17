@@ -1,6 +1,6 @@
 # Chess Coursework Project
 This is my year 13 OCR A Level Computer Science coursework. I am coding chess with online multiplayer functionality in Javascript. It will be made using Electron.
-##To-do List:
+## To-do List:
 Currently most of the trouble will be in getting the visual and internet based parts to work, since I sorted out almost all of the game's logic in the **3.2.2 Design the Solution** section.
 * **Start testing and writing about modules!**
 * Make the actual **while** loop that the game runs in
