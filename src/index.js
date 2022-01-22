@@ -45,3 +45,25 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
+mainWIndow = null;
+
+app.on("ready", function() {
+
+  mainWindow = new BrowserWindow({width:800, height : 600});
+  mainWindow.loadUrl('file://' + __dirname + '/src/index.html');
+  mainWindow.webContents.on("did-finish-load", () => {
+  
+    //Hide everything on startup
+    thingsToHide = [
+      "in-game",
+      "join-lobby",
+      "create-lobby",
+      "lobby",
+      "profile"
+    ];
+    for (i = 0; i < thingsToHide.length; i++) {
+      mainWindow.document.getElementById(thingsToHide[i]).hide("fade", {}, 1);
+    };
+  });
+})
