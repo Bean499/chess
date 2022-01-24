@@ -7,8 +7,7 @@
 //Do this later due to above complications
 //json = $.getJSON("profile.json", data => console.log(data));
 
-const server = "https://bean-chess.infinityfreeapp.com";
-const images = server + "/htdocs/img/"
+const images = server + "../img/"
 
 function preload () {
     var boardImage = loadImage(images + "board.png");
