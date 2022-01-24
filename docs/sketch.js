@@ -10,33 +10,33 @@
 const server = "https://bean-chess.infinityfreeapp.com";
 const images = server + "/htdocs/img/"
 
-//function preload () {
-//    var boardImage = loadImage(images + "board.png");
-//    var pieceImages = {
-//        "white": {
-//            "pawn": "",
-//            "knight": "",
-//            "bishop": "",
-//            "rook": "",
-//            "queen": "",
-//            "king": ""
-//        },
-//        "black": {
-//            "pawn": "",
-//            "knight": "",
-//            "bishop": "",
-//            "rook": "",
-//            "queen": "",
-//            "king": ""
-//        }
-//    };
-//    for (const colour in pieceImages) {
-//        for (const type in pieceImages[colour]) {
-//            pieceImages[colour][type] = loadImage(images + type + "_" + colour);
-//            console.log("Loaded " + type + colour);
-//        }
-//    };
-//}
+function preload () {
+    var boardImage = loadImage(images + "board.png");
+    var pieceImages = {
+        "white": {
+            "pawn": "",
+            "knight": "",
+            "bishop": "",
+            "rook": "",
+            "queen": "",
+            "king": ""
+        },
+        "black": {
+            "pawn": "",
+            "knight": "",
+            "bishop": "",
+            "rook": "",
+            "queen": "",
+            "king": ""
+        }
+    };
+    for (const colour in pieceImages) {
+        for (const type in pieceImages[colour]) {
+            pieceImages[colour][type] = loadImage(images + type + "_" + colour);
+            console.log("Loaded " + type + colour);
+        }
+    };
+}
 
 function setup () {
     createCanvas(480, 480);
