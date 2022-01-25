@@ -7,7 +7,7 @@
 //Do this later due to above complications
 //json = $.getJSON("profile.json", data => console.log(data));
 
-const images = server + "../img/"
+const images = "../img/"
 
 function preload () {
     var boardImage = loadImage(images + "board.png");
