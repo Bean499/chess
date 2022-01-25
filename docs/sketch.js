@@ -31,7 +31,7 @@ function preload () {
     };
     for (const colour in pieceImages) {
         for (const type in pieceImages[colour]) {
-            pieceImages[colour][type] = loadImage(images + type + "_" + colour);
+            pieceImages[colour][type] = loadImage(images + type + "_" + colour + ".png");
             console.log("Loaded " + type + colour);
         }
     };
