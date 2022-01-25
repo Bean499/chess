@@ -251,4 +251,16 @@ class Piece {
         }
         return validMoves
     }
+    renderPiece() {
+        x = this.x * 60;
+        y = this.y * 60;
+        if (this.white) {
+            colour = "white";
+        }
+        else {
+            colour = "black";
+        }
+        sprite = pieceImages[colour][this.type]; 
+        image(sprite, x, y);
+    }
 }

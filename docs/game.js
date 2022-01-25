@@ -83,4 +83,10 @@ class Game {
             this.board[y][x] = game.pieces[i];
         }
     }
+
+    function renderAllPieces () {
+        for (i = 0; i < this.pieces.length; i++) {
+            this.pieces[i].renderPiece();
+        }
+    }
 }
