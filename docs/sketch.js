@@ -11,6 +11,7 @@ const images = "img/"
 const canvasName = "defaultCanvas0";
 //Writing this is a pain, so I've put it in a constant
 
+//This object will hold the P5Image instances for sprites
 var pieceImages = {
     "white": {
         "pawn": "",
@@ -77,7 +78,8 @@ function preload () {
 }
 
 function setup () {
-    createCanvas(480, 480);
+    var canvas = createCanvas(480, 480);
+    canvas.parent("in-game")
     hide(["title",canvasName]);
     game = new Game(700, "Ben", "Nick");
 }
