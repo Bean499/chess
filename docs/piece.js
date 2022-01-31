@@ -39,35 +39,35 @@ class Piece {
     }
     
     cardinalMove() {
-        moves = [];
-        for (i = this.x * -1; i < 8 - this.x; i++) {
+        let moves = [];
+        for (let i = this.x * -1; i < 8 - this.x; i++) {
             if (i != 0) {
-                moves.append([0,i]);
+                moves.push([0,i]);
             }
         }
-        for (j = this.y * -1; j < 8 - this.x; j++) {
+        for (let j = this.y * -1; j < 8 - this.x; j++) {
             if (j != 0) {
-                moves.append([j,0]);
+                moves.push([j,0]);
             }
         }
         return moves
     }
 
     diagonalMove() {
-        moves = [];
-        for (k = 1; k < 8; k++) {
-            for (horMultiplier = -1; horMultiplier < 2; horMultiplier++) {
-                for (vertMultiplier = -1; vertMultiplier < 2; vertMultiplier++) {
+        let moves = [];
+        for (let k = 1; k < 8; k++) {
+            for (let horMultiplier = -1; horMultiplier < 2; horMultiplier++) {
+                for (let vertMultiplier = -1; vertMultiplier < 2; vertMultiplier++) {
                     if (horMultiplier != 0 && vertMultiplier != 0) {
                     //Makes sure no stationary move is appended
-                        i = k * horMultiplier;
-                        j = k * vertMultiplier;
+                        let i = k * horMultiplier;
+                        let j = k * vertMultiplier;
 
-                        newX = this.x + i;
-                        newY = this.y + j;
+                        let newX = this.x + i;
+                        let newY = this.y + j;
 
                         if (newX <= 7 && newX >= 0 && newY <= 7 && newY >= 0) {
-                            moves.append([j, i]);
+                            moves.push([j, i]);
                         }
                     }
                 }
@@ -78,8 +78,8 @@ class Piece {
 
     move (j, i) {
         if (this.getValidMoves().includes([j, i])) {
-            newX = this.x + i;
-            newY = this.y + j;
+            let newX = this.x + i;
+            let newY = this.y + j;
             if (!this.hasMoved) {
                 if (this.type == "pawn" && Math.abs(j) == 2) {
                 //If this is a pawn moving two spaces
@@ -112,15 +112,15 @@ class Piece {
     }
 
     removeOOB(moves) {
-        toDelete = [];
-        for (i = 0; i < moves.length; i++) {
-            newX = this.x + moves[i][1];
-            newY = this.y + moves[i][0];
+        let toDelete = [];
+        for (let i = 0; i < moves.length; i++) {
+            let newX = this.x + moves[i][1];
+            let newY = this.y + moves[i][0];
             if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
-                toDelete.append(moves[i]);
+                toDelete.push(moves[i]);
             }
         }
-        for (i = toDelete.length; i >= 0; i--) {
+        for (let i = toDelete.length; i >= 0; i--) {
         //This probably looks like a really weird for loop
         //It goes backwards through the list of items to delete
         //If it went forwards then the indices in toDelete would become
@@ -131,42 +131,42 @@ class Piece {
     }
 
     sortMoves(moves) {
-        sortedMoves = [[], [], [], [], [], [], [], []];
+        let sortedMoves = [[], [], [], [], [], [], [], []];
         //Ordered clockwise, starting from straight upwards
         //Up, up-right, right, down-right, down, down-left, left, up-left
         //0	  1	        2      3           4     5          6     7
-        for (i = 0; i < moves.length; i++) {
+        for (let i = 0; i < moves.length; i++) {
             if (moves[i][0] > 0) {
                 if (moves[i][1] < 0) {          //Up Left
-                    sortedMoves[7].append(moves[i]);
+                    sortedMoves[7].push(moves[i]);
                 }
                 else if (moves[i][1] == 0) {    //Up
-                    sortedMoves[0].append(moves[i]);
+                    sortedMoves[0].push(moves[i]);
                 }
                 else {                          //Up right
-                    sortedMoves[1].append(moves[i]);
+                    sortedMoves[1].push(moves[i]);
                 }
             }
             else if (moves[i][0] == 0) {
                 if (moves[i][1] < 0) {          //Left
-                    sortedMoves[6].append(moves[i]);
+                    sortedMoves[6].push(moves[i]);
                 }
                 else if (moves[i][1] == 0) {    //This block should never run!
-                    console.log("You should never see thig");
+                    console.log("Uh oh spaghettio");
                 }
                 else {                          //Right
-                    sortedMoves[2].append(moves[i]);
+                    sortedMoves[2].push(moves[i]);
                 }
             }
             else {
                 if (moves[i][1] < 0) {          //Down left
-                    sortedMoves[5].append(moves[i]);
+                    sortedMoves[5].push(moves[i]);
                 }
                 else if (moves[i][1] == 0) {    //Down
-                    sortedMoves[4].append(moves[i]);
+                    sortedMoves[4].push(moves[i]);
                 }
                 else {                          //Down right
-                    sortedMoves[3].append(moves[i]);
+                    sortedMoves[3].push(moves[i]);
                 }
             }
         }
@@ -174,19 +174,19 @@ class Piece {
     }
 
     getValidMoves() {
-        validMoves = [];
-        moves = this.removeOOB(this.movePattern());
-        kills = this.removeOOB(this.killPattern());
+        let validMoves = [];
+        let moves = this.removeOOB(this.movePattern());
+        let kills = this.removeOOB(this.killPattern());
         if (this.type == "knight") {
             return moves
         }
         else if (this.type == "king") {
-            castle = this.castleCheck();
+            let castle = this.castleCheck();
             //Check if the king can castle
             if (castle != []) {
             //If it can:
-                for (i = 0; i < castle.length; i++) {
-                    validMoves.append(castle[i]);
+                for (let i = 0; i < castle.length; i++) {
+                    validMoves.push(castle[i]);
                     //Add the castle moves to the validMoves list
                     //(Validation is done in King.castleCheck)
                 }
@@ -194,36 +194,36 @@ class Piece {
         }
         else {
             //Sort moves into directions
-            moves = sortMoves(moves);
-            kills = sortMoves(kills);
-            for (j = 0; j < 8; j++) {
+            let moves = sortMoves(moves);
+            let kills = sortMoves(kills);
+            for (let j = 0; j < 8; j++) {
             //For each direction
-                movesToDelete = [];
-                blocked = false;
-                for (i = 0; i < moves[j].length; i ++); {
+                let movesToDelete = [];
+                let blocked = false;
+                for (let i = 0; i < moves[j].length; i ++); {
                 //For each move in current direction
-                    newX = this.x + moves[j][i][1];
-                    newY = this.y + moves[j][i][0];
+                    let newX = this.x + moves[j][i][1];
+                    let newY = this.y + moves[j][i][0];
                     if (game.board[newY][newX] != null || blocked) {
                     //If the new space is occupied, or if this direction is blocked
                         blocked = true;
-                        movesToDelete.append(moves[j][i]);
+                        movesToDelete.push(moves[j][i]);
                     }
                 }
-                killsToDelete = [];
+                let killsToDelete = [];
                 blocked = false
-                for (i = 0; i < kills[j].length; i ++); {
+                for (let i = 0; i < kills[j].length; i ++); {
                 //For each move in current direction
-                    newX = this.x + kills[j][i][1];
-                    newY = this.y + kills[j][i][0];
+                    let newX = this.x + kills[j][i][1];
+                    let newY = this.y + kills[j][i][0];
                     if (game.board[newY][newX] == null || blocked) {
                     //If the new space isn't occupied, remove the kill
                     //but don't mark the direction as blocked
-                        movesToDelete.append(moves[j][i]);
+                        movesToDelete.push(moves[j][i]);
                     }
                     else if (game.board[newY][newX].white == this.white) {
                     //If the new space is occupied by an ally
-                        killsToDelete.append(moves[j][i]);
+                        killsToDelete.push(moves[j][i]);
                         blocked = true;
                     }
                     else {
@@ -233,34 +233,35 @@ class Piece {
                     }
                 }
                 //Two more backwards for loops, like in Piece.removeOOB
-                for (i = movesToDelete.length; i >= 0; i--) {
+                for (let i = movesToDelete.length; i >= 0; i--) {
                     moves.splice(i, 1);
                 }
-                for (i = killsToDelete.length; i >= 0; i--) {
+                for (let i = killsToDelete.length; i >= 0; i--) {
                     kills.splice(i, 1);
                 }
             }
         }
-        for (i = 0; i < 8; i++) {
-            for (j = 0; j < moves[i].length; j++) {
-                validMoves.append(moves[i][j]);
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < moves[i].length; j++) {
+                validMoves.push(moves[i][j]);
             }
-            for (j = 0; j < kills[i].length; j++) {
-                validMoves.append(kills[i][j]);
+            for (let j = 0; j < kills[i].length; j++) {
+                validMoves.push(kills[i][j]);
             }
         }
         return validMoves
     }
     renderPiece() {
-        x = this.x * 60;
-        y = this.y * 60;
+        let x = this.x * 60;
+        let y = this.y * 60;
+        let colour;
         if (this.white) {
             colour = "white";
         }
         else {
             colour = "black";
         }
-        sprite = pieceImages[colour][this.type]; 
+        let sprite = pieceImages[colour][this.type]; 
         image(sprite, x, y);
     }
 }

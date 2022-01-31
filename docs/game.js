@@ -20,11 +20,11 @@ class Game {
     }
 
     newEmptyBoard() {
-        board = [];
-        for (i = 0; i < 8; i++) {
-            board.append([]);
-            for (j = 0; j < 8; j++) {
-                board[i].append(null)
+        let board = [];
+        for (let i = 0; i < 8; i++) {
+            board.push([]);
+            for (let j = 0; j < 8; j++) {
+                board[i].push(null)
             }
         }
         return board;
@@ -33,59 +33,59 @@ class Game {
     newFilledBoard() {
         this.board = this.newEmptyBoard();
 
-        kingsQueens = [[true, 7], [false, 0]];
-        rooks = [[true, 7, 0], [true, 7, 7], [false, 0, 0], [false, 0, 7]];
-        knights = [[true, 7, 1], [true, 7, 6], [false, 0, 1], [false, 0, 6]];
-        bishops = [[true, 7, 2], [true, 7, 5], [false, 0, 2], [false, 0, 5]];
-        pawns = [[false, 1], [true, 6]]
+        let kingsQueens = [[true, 7], [false, 0]];
+        let rooks = [[true, 0, 7], [true, 7, 7], [false, 0, 0], [false, 7, 0]];
+        let knights = [[true, 1, 7], [true, 6, 7], [false, 1, 0], [false, 6, 0]];
+        let bishops = [[true, 2, 7], [true, 5, 7], [false, 2, 0], [false, 5, 0]];
+        let pawns = [[false, 1], [true, 6]]
 
-        this.pieces.append(new King(kingsQueens[0][0], kingsQueens[0][1], 4));
-        this.pieces.append(new King(kingsQueens[1][0], kingsQueens[1][1], 4));
+        this.pieces.push(new King(kingsQueens[0][0], 4, kingsQueens[0][1]));
+        this.pieces.push(new King(kingsQueens[1][0], 4, kingsQueens[1][1]));
 
         //Appends kings outside of for loop since having both kings at index
         //0 and 1 makes coding the checkmateCheck function easier
 
-        for (i = 0; i < 2; i++) {
-            this.pieces.append(new Queen(kingsQueens[i][0], kingsQueens[i][1], 3));
+        for (let i = 0; i < 2; i++) {
+            this.pieces.push(new Queen(kingsQueens[i][0], 3, kingsQueens[i][1]));
             //Last item in Queen constructor is x coordinate, since that doesn't change
-            for (j = 0; j < 8; j++) {
-                pieces.append(new Pawn(pawns[i][0], pawns[i][1], j));
+            for (let j = 0; j < 8; j++) {
+                this.pieces.push(new Pawn(pawns[i][0], j, pawns[i][1]));
             }
         }
 
-        for (i = 0; i < 4; i++) {
-            this.pieces.append(new Rook(rooks[i][0], rooks[i][1], rooks[i][2]));
-            this.pieces.append(new Knight(knights[i][0], knights[i][1], knights[i][2]));
-            this.pieces.append(new Bishop(bishop[i][0], bishop[i][1], bishop[i][2]));
+        for (let i = 0; i < 4; i++) {
+            this.pieces.push(new Rook(rooks[i][0], rooks[i][1], rooks[i][2]));
+            this.pieces.push(new Knight(knights[i][0], knights[i][1], knights[i][2]));
+            this.pieces.push(new Bishop(bishops[i][0], bishops[i][1], bishops[i][2]));
         }
 
-        this.updateBoard();     //Puts the pieces into the board 2D array
+        this.update();     //Puts the pieces into the board 2D array
     }
 
     cleanup() {
-        toDelete = [];
-        for (i = 0; i < game.pieces.length; i++) {
-            if (game.pieces[i].x == -1 || (game.pieces[i].type == "ghost" && game.pieces[i].white == game.p1Turn)) {
-                toDelete.append(game.pieces[i]);
+        let toDelete = [];
+        for (let i = 0; i < this.pieces.length; i++) {
+            if (this.pieces[i].x == -1 || (this.pieces[i].type == "ghost" && this.pieces[i].white == this.p1Turn)) {
+                toDelete.push(this.pieces[i]);
             }
         }
-        for (i = 0; i < toDelete.length; i++) {
-            game.pieces.splice(i, 1);
+        for (let i = 0; i < toDelete.length; i++) {
+            this.pieces.splice(i, 1);
         }
     }
 
     update() {
         this.cleanup();
         this.board = this.newEmptyBoard();
-        for (i = 0; i < game.pieces.length; i++) {
-            x = game.pieces[i].x;
-            y = game.pieces[i].y;
-            this.board[y][x] = game.pieces[i];
+        for (let i = 0; i < this.pieces.length; i++) {
+            let x = this.pieces[i].x;
+            let y = this.pieces[i].y;
+            this.board[y][x] = this.pieces[i];
         }
     }
 
-    function renderAllPieces () {
-        for (i = 0; i < this.pieces.length; i++) {
+    renderAllPieces () {
+        for (let i = 0; i < this.pieces.length; i++) {
             this.pieces[i].renderPiece();
         }
     }

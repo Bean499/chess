@@ -6,7 +6,7 @@ class Pawn extends Piece {
     movePattern() {
         moves = [[1, 0]];
         if (!this.hasMoved) {
-            moves.append([2,0]);
+            moves.push([2,0]);
         }
         //The base moves are for black pawns
         if (this.white) {   //If the pawn is instead white
@@ -83,7 +83,7 @@ class Queen extends Piece {
         diagonalMoves = this.diagonalMove();
         cardinalMoves = this.cardinalMove();
         for (i = 0; i < cardinalMoves.length; i++) {
-            diagonalMoves.append(cardinalMoves[i]);
+            diagonalMoves.push(cardinalMoves[i]);
         }
         moves = diagonalMoves;
         return moves

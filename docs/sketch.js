@@ -46,8 +46,8 @@ function hide (exclude) {
         canvasName,
     ];
 
-    for (i = 0; i < thingsToHide.length; i++) {
-        if (thingsToHide[i] == exclude) {
+    for (let i = 0; i < thingsToHide.length; i++) {
+        if (exclude.includes(thingsToHide[i])) {
             $("#"+thingsToHide[i]).show("fade")
         }
         else {
@@ -78,7 +78,7 @@ function preload () {
 
 function setup () {
     createCanvas(480, 480);
-    hide("title");
+    hide(["title",canvasName]);
     game = new Game(700, "Ben", "Nick");
 }
 

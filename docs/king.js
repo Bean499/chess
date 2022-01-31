@@ -20,7 +20,7 @@ class King extends Piece {
                 }
             } 
             if (!game.board[this.y][this.x - 4].hasMoved) {     //Repeat the above for left rook
-                if (game.board[this.x - 1][this.y] == null && game.board[this.x - 2][this.y] == null && ) {
+                if (game.board[this.x - 1][this.y] == null && game.board[this.x - 2][this.y] == null && game.board[this.x - 3][this.y] == null) {
                     moves.append([0, -2]);
                 }
             }
