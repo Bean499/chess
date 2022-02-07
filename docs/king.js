@@ -8,7 +8,7 @@ class King extends Piece {
     //This validation should really take place in Piece.getValidMoves()
     //So you can just stick the castle moves in the moves list
     //and then the validation will remove them if needed
-    movePattern() {
+    movePattern(game) {
         moves = [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]];
     
         //The below checks whether the king can castle, and if so, adds the appropriate moves to the list
@@ -31,7 +31,7 @@ class King extends Piece {
     //This function checks which directions, if any, the king can castle in.
     //I've put it here instead of in Piece.getValidMoves to avoid clutter,
     //since that function is already really massive as it is.
-    castleCheck() {
+    castleCheck(game) {
         moves = [];
         if (!this.hasMoved) {
             if (!game.board[this.y][this.x+3].hasMoved) {
@@ -48,11 +48,11 @@ class King extends Piece {
         return moves
     }
 
-    checkCheck() {
+    checkCheck(game) {
         check = false;
         for (i = 0; i < game.pieces.length; i++) {
             if (this.white != game.pieces[i].white) {
-                //Tried toy use i/j for move but ended up
+                //Tried to use i/j for move but ended up
                 //overwriting count variable. Whoops!
                 x = this.x - game.pieces[i].x;
                 y = this.y - game.pieces[i].y;
@@ -65,7 +65,7 @@ class King extends Piece {
         return check
     }
 
-    checkmateCheck() {
+    checkmateCheck(game) {
         check = false;
         //These if statements exist because the white king is always index 0
         //in the game.pieces array, and the black king is always index 1.

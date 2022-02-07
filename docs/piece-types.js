@@ -4,13 +4,13 @@ class Pawn extends Piece {
     }
 
     movePattern() {
-        moves = [[1, 0]];
+        let moves = [[1, 0]];
         if (!this.hasMoved) {
             moves.push([2,0]);
         }
         //The base moves are for black pawns
         if (this.white) {   //If the pawn is instead white
-            for (i = 0; i < moves.length; i++) {
+            for (let i = 0; i < moves.length; i++) {
                 //Flip the vertical component of each move
                 moves[i][0] = moves[i][0] * -1;
             }
@@ -22,10 +22,10 @@ class Pawn extends Piece {
     }
 
     killPattern() {
-        moves = [[1, -1], [1, 1]];  //Pawns take diagonally
+        let moves = [[1, -1], [1, 1]];  //Pawns take diagonally
         //The base moves are for black pawns
         if (this.white) {   //If the pawn is instead white
-            for (i = 0; i < moves.length; i++) {
+            for (let i = 0; i < moves.length; i++) {
                 //Flip the vertical component of each move
                 moves[i][0] = moves[i][0] * -1;
             }
@@ -49,7 +49,7 @@ class Knight extends Piece {
     }
 
     movePattern() {
-        moves = [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-1, 2], [-1, 2]];
+        let moves = [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-1, 2], [-1, 2]];
         return moves
     }
 }
@@ -80,12 +80,12 @@ class Queen extends Piece {
     }
 
     movePattern() {
-        diagonalMoves = this.diagonalMove();
-        cardinalMoves = this.cardinalMove();
-        for (i = 0; i < cardinalMoves.length; i++) {
+        let diagonalMoves = this.diagonalMove();
+        let cardinalMoves = this.cardinalMove();
+        for (let i = 0; i < cardinalMoves.length; i++) {
             diagonalMoves.push(cardinalMoves[i]);
         }
-        moves = diagonalMoves;
+        let moves = diagonalMoves;
         return moves
     }
 }

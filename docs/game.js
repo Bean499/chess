@@ -16,7 +16,7 @@ class Game {
         ];
         this.p1Turn = true;
         this.pieces = [];
-        this.board = this.newFilledBoard();
+        this.newFilledBoard();
     }
 
     newEmptyBoard() {
@@ -58,7 +58,6 @@ class Game {
             this.pieces.push(new Knight(knights[i][0], knights[i][1], knights[i][2]));
             this.pieces.push(new Bishop(bishops[i][0], bishops[i][1], bishops[i][2]));
         }
-
         this.update();     //Puts the pieces into the board 2D array
     }
 
@@ -66,22 +65,25 @@ class Game {
         let toDelete = [];
         for (let i = 0; i < this.pieces.length; i++) {
             if (this.pieces[i].x == -1 || (this.pieces[i].type == "ghost" && this.pieces[i].white == this.p1Turn)) {
-                toDelete.push(this.pieces[i]);
+                toDelete.push(i);
             }
         }
+        console.log(toDelete);
+        console.log(this.pieces);
         for (let i = 0; i < toDelete.length; i++) {
-            this.pieces.splice(i, 1);
+            this.pieces.splice(toDelete[i], 1);
         }
     }
 
     update() {
         this.cleanup();
-        this.board = this.newEmptyBoard();
+        console.log(this.pieces);
         for (let i = 0; i < this.pieces.length; i++) {
             let x = this.pieces[i].x;
             let y = this.pieces[i].y;
             this.board[y][x] = this.pieces[i];
         }
+        this.renderAllPieces();
     }
 
     renderAllPieces () {

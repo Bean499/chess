@@ -6,4 +6,4 @@
 * There will be evidence of validation for all key elements of the solution,
 * The development will show review at all key stages in the process.
 * Provided evidence of testing at each stage of the iterative development process.
-Provided evidence of any failed tests and the remedial actions taken with full justification for any actions take.
+* Provided evidence of any failed tests and the remedial actions taken with full justification for any actions take.

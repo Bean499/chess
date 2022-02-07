@@ -12,6 +12,9 @@ class Piece {
 
         this.hasMoved = false;      //These values always start as false
         this.selected = false;      //A new piece isn't selected and has never moved
+        if (type == "king") {
+            console.log(this);
+        }
     }
 
     movePattern() { }   //This method is empty since each child
@@ -21,7 +24,7 @@ class Piece {
         return this.movePattern();      //so by default this just returns the normal move pattern
     }
 
-    die() {
+    die(game) {
         if (this.type == "ghost") {     //If ghost pawn (En Passant)
             if (game.p1Turn != this.white) {    //If it's not owned by the current player
                                                 //(has been actively killed)
@@ -36,8 +39,9 @@ class Piece {
         }
         this.x = -1;    //Negative coordinates mark a piece
         this.y = -1;    //for death (see Game.cleanup method)
+        return game
     }
-    
+
     cardinalMove() {
         let moves = [];
         for (let i = this.x * -1; i < 8 - this.x; i++) {
@@ -76,39 +80,43 @@ class Piece {
         return moves
     }
 
-    move (j, i) {
-        if (this.getValidMoves().includes([j, i])) {
+    move (j, i, game) {
+        if (this.getValidMoves(game).includes([j, i])) {
+        //If the move is valid:
             let newX = this.x + i;
             let newY = this.y + j;
+            //Variables for new coordinates
             if (!this.hasMoved) {
                 if (this.type == "pawn" && Math.abs(j) == 2) {
                 //If this is a pawn moving two spaces
-                    this.createGhostPawn(j);
-                    //Make a ghost pawn at the space if moved from
+                    game.pieces.push(new GhostPawn(this.white, this.x, this.y + 0.5 * j, newY));
+                    //Make a ghost pawn at the space it moved from
                 }
                 else if (this.type == "king" && Math.abs(i) > 1) {
                 //If this is a king and it's castling
                     if (i > 0) {
                     //If going right
-                        game.board[this.y][this.x+3].move(0, -2);
+                        game = game.board[this.y][this.x+3].move(0, -2);
                         //Move the rook that's to the right
                     }
                     else {
                     //If going left
-                        game.board[this.y][this.x-4].move(0, 3);
+                        game = game.board[this.y][this.x-4].move(0, 3);
                         //Move the rook that's to the left
                     }
                 }
                 this.hasMoved = true;
             }
             if (game.board[newY][newX] != null) {
-                game.board[newY][newX].die();
+                game = game.board[newY][newX].die();
             }
             this.x = newX;
             this.y = newY;
             game.board.update();
             //Render the new positions of pieces
         }
+        //When done (or if the move is invalid), return
+        return game
     }
 
     removeOOB(moves) {
@@ -128,6 +136,7 @@ class Piece {
         //indicies changing - going backwards means that this doesn't happen
             moves.splice(i, 1);
         }
+        return moves
     }
 
     sortMoves(moves) {
@@ -173,7 +182,7 @@ class Piece {
         return sortedMoves
     }
 
-    getValidMoves() {
+    getValidMoves(game) {
         let validMoves = [];
         let moves = this.removeOOB(this.movePattern());
         let kills = this.removeOOB(this.killPattern());
@@ -193,37 +202,38 @@ class Piece {
             }
         }
         else {
+            console.log(moves);
             //Sort moves into directions
-            let moves = sortMoves(moves);
-            let kills = sortMoves(kills);
+            moves = this.sortMoves(moves);
+            kills = this.sortMoves(kills);
             for (let j = 0; j < 8; j++) {
             //For each direction
                 let movesToDelete = [];
                 let blocked = false;
-                for (let i = 0; i < moves[j].length; i ++); {
+                for (let i = 0; i < moves[j].length; i ++) {
                 //For each move in current direction
                     let newX = this.x + moves[j][i][1];
                     let newY = this.y + moves[j][i][0];
                     if (game.board[newY][newX] != null || blocked) {
                     //If the new space is occupied, or if this direction is blocked
                         blocked = true;
-                        movesToDelete.push(moves[j][i]);
+                        movesToDelete.push([j][i]);
                     }
                 }
                 let killsToDelete = [];
                 blocked = false
-                for (let i = 0; i < kills[j].length; i ++); {
+                for (let i = 0; i < kills[j].length; i ++) {
                 //For each move in current direction
                     let newX = this.x + kills[j][i][1];
                     let newY = this.y + kills[j][i][0];
                     if (game.board[newY][newX] == null || blocked) {
                     //If the new space isn't occupied, remove the kill
                     //but don't mark the direction as blocked
-                        movesToDelete.push(moves[j][i]);
+                        movesToDelete.push([j][i]);
                     }
                     else if (game.board[newY][newX].white == this.white) {
                     //If the new space is occupied by an ally
-                        killsToDelete.push(moves[j][i]);
+                        killsToDelete.push([j][i]);
                         blocked = true;
                     }
                     else {
@@ -232,12 +242,16 @@ class Piece {
                         //Mark the direction as blocked but don't remove the kill
                     }
                 }
+                console.log('moves');
+                console.log(movesToDelete);
+                console.log('kills');
+                console.log(killsToDelete);
                 //Two more backwards for loops, like in Piece.removeOOB
                 for (let i = movesToDelete.length; i >= 0; i--) {
-                    moves.splice(i, 1);
+                    moves.splice(movesToDelete[i], 1);
                 }
                 for (let i = killsToDelete.length; i >= 0; i--) {
-                    kills.splice(i, 1);
+                    kills.splice(killsToDelete[i][1], 1);
                 }
             }
         }
@@ -261,7 +275,7 @@ class Piece {
         else {
             colour = "black";
         }
-        let sprite = pieceImages[colour][this.type]; 
+        let sprite = pieceImages[colour][this.type];
         image(sprite, x, y);
     }
 }

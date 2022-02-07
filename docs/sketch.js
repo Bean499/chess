@@ -44,15 +44,19 @@ function hide (exclude) {
         "lobby",
         "profile",
         "get-name",
-        canvasName,
+        canvasName
     ];
+
+    if (!Array.isArray(exclude)) {
+        exclude = [exclude]
+    }
 
     for (let i = 0; i < thingsToHide.length; i++) {
         if (exclude.includes(thingsToHide[i])) {
-            $("#"+thingsToHide[i]).show("fade")
+            $("#"+thingsToHide[i]).show()
         }
         else {
-            $("#"+thingsToHide[i]).hide("fade");
+            $("#"+thingsToHide[i]).hide();
         }
     };
 }
@@ -68,6 +72,11 @@ $("#create-button").click(() => hide("create-lobby"));
 $("#join-button").click(() => hide("join-lobby"));
 $("#profile-button").click(() => hide("profile"));
 
+function ghostpawntest(game) {
+    game = game.board[6][4].move(2, 0, game);
+    game.update();
+}
+
 function preload () {
     boardImage = loadImage(images + "board.png");
     for (const colour in pieceImages) {
@@ -78,14 +87,17 @@ function preload () {
 }
 
 function setup () {
-    var canvas = createCanvas(480, 480);
-    canvas.parent("in-game")
-    hide(["title",canvasName]);
+    canvas = createCanvas(480, 480);
+    background(0, 0, 0);
+    //canvas.parent("in-game");   //Put the canvas inside the in-game div
+    //hide(["title",canvasName]);
     game = new Game(700, "Ben", "Nick");
+    console.log(game.board);
+    ghostpawntest(game);
+    console.log(game.players);
 }
 
 function draw() {
-    background(0, 0, 0);
     image(boardImage, 0, 0);
     game.renderAllPieces();
 }
