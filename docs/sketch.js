@@ -72,10 +72,38 @@ $("#create-button").click(() => hide("create-lobby"));
 $("#join-button").click(() => hide("join-lobby"));
 $("#profile-button").click(() => hide("profile"));
 
+// TESTS ------------------------------------------------------------------------------------- {{{
 function ghostpawntest(game) {
+    //Not done yet
     game = game.board[6][4].move(2, 0, game);
     game.update();
 }
+
+function dietest(game) {
+    //Passed
+    game = game.board[6][4].die();
+    game.update();
+}
+
+function OOBtest(game) {
+    //Passed
+    console.log(game.board[7][1].removeOOB(game.board[7][1].movePattern()));
+    console.log(game.board[7][4].removeOOB(game.board[7][4].movePattern()));
+}
+
+function sortTest(game) {
+    //Passed
+    console.log(game.board[7][3].sortMoves(game.board[7][3].movePattern()));
+}
+
+function castleTest(game) {
+    game = game.board[7][1].die(game);
+    game = game.board[7][2].die(game);
+    game = game.board[7][3].die(game);
+    game.update();
+    console.log(game.board[7][4].castleCheck(game));
+}
+// }}}
 
 function preload () {
     boardImage = loadImage(images + "board.png");
@@ -92,9 +120,7 @@ function setup () {
     //canvas.parent("in-game");   //Put the canvas inside the in-game div
     //hide(["title",canvasName]);
     game = new Game(700, "Ben", "Nick");
-    console.log(game.board);
-    ghostpawntest(game);
-    console.log(game.players);
+    castleTest(game);
 }
 
 function draw() {

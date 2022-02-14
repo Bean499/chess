@@ -49,7 +49,7 @@ class Knight extends Piece {
     }
 
     movePattern() {
-        let moves = [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-1, 2], [-1, 2]];
+        let moves = [[1, 2], [2, 1], [2, -1], [1, -2], [-1, -2], [-2, -1], [-2, 1], [-1, 2]];
         return moves
     }
 }

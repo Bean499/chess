@@ -12,9 +12,6 @@ class Piece {
 
         this.hasMoved = false;      //These values always start as false
         this.selected = false;      //A new piece isn't selected and has never moved
-        if (type == "king") {
-            console.log(this);
-        }
     }
 
     movePattern() { }   //This method is empty since each child
@@ -49,7 +46,7 @@ class Piece {
                 moves.push([0,i]);
             }
         }
-        for (let j = this.y * -1; j < 8 - this.x; j++) {
+        for (let j = this.y * -1; j < 8 - this.y; j++) {
             if (j != 0) {
                 moves.push([j,0]);
             }
@@ -125,16 +122,18 @@ class Piece {
             let newX = this.x + moves[i][1];
             let newY = this.y + moves[i][0];
             if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
-                toDelete.push(moves[i]);
+                toDelete.push(i);
             }
         }
-        for (let i = toDelete.length; i >= 0; i--) {
-        //This probably looks like a really weird for loop
-        //It goes backwards through the list of items to delete
-        //If it went forwards then the indices in toDelete would become
-        //invalid due to the items in moves moving forwards, and their
-        //indicies changing - going backwards means that this doesn't happen
-            moves.splice(i, 1);
+        if (toDelete.length > 0) {
+            for (let i = toDelete.length - 1; i >= 0; i--) {
+            //This probably looks like a really weird for loop
+            //It goes backwards through the list of items to delete
+            //If it went forwards then the indices in toDelete would become
+            //invalid due to the items in moves moving forwards, and their
+            //indicies changing - going backwards means that this doesn't happen
+                moves.splice(i, 1);
+            }
         }
         return moves
     }
@@ -145,7 +144,7 @@ class Piece {
         //Up, up-right, right, down-right, down, down-left, left, up-left
         //0	  1	        2      3           4     5          6     7
         for (let i = 0; i < moves.length; i++) {
-            if (moves[i][0] > 0) {
+            if (moves[i][0] < 0) {
                 if (moves[i][1] < 0) {          //Up Left
                     sortedMoves[7].push(moves[i]);
                 }
@@ -184,12 +183,14 @@ class Piece {
 
     getValidMoves(game) {
         let validMoves = [];
-        let moves = this.removeOOB(this.movePattern());
-        let kills = this.removeOOB(this.killPattern());
+        let moves = this.movePattern();
+        let kills = this.killPattern();
         if (this.type == "knight") {
+            moves = this.removeOOB(moves);
             return moves
         }
         else if (this.type == "king") {
+            moves = this.removeOOB(moves);
             let castle = this.castleCheck();
             //Check if the king can castle
             if (castle != []) {
@@ -229,11 +230,11 @@ class Piece {
                     if (game.board[newY][newX] == null || blocked) {
                     //If the new space isn't occupied, remove the kill
                     //but don't mark the direction as blocked
-                        movesToDelete.push([j][i]);
+                        movesToDelete.push([j, i]);
                     }
                     else if (game.board[newY][newX].white == this.white) {
                     //If the new space is occupied by an ally
-                        killsToDelete.push([j][i]);
+                        killsToDelete.push([j, i]);
                         blocked = true;
                     }
                     else {
@@ -247,11 +248,15 @@ class Piece {
                 console.log('kills');
                 console.log(killsToDelete);
                 //Two more backwards for loops, like in Piece.removeOOB
-                for (let i = movesToDelete.length; i >= 0; i--) {
-                    moves.splice(movesToDelete[i], 1);
+                if (movesToDelete.length > 0) {
+                    for (let i = movesToDelete.length; i >= 0; i--) {
+                        moves[movesToDelete[i][0]].splice(movesToDelete[i][1], 1);
+                    }
                 }
-                for (let i = killsToDelete.length; i >= 0; i--) {
-                    kills.splice(killsToDelete[i][1], 1);
+                if (killsToDelete.length > 0) {
+                    for (let i = killsToDelete.length; i >= 0; i--) {
+                        kills[killsToDelete[i][0]].splice(killsToDelete[i][1], 1);
+                    }
                 }
             }
         }

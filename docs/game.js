@@ -70,20 +70,21 @@ class Game {
         }
         console.log(toDelete);
         console.log(this.pieces);
-        for (let i = 0; i < toDelete.length; i++) {
+        for (let i = toDelete.length - 1; i >= 0; i--) {
             this.pieces.splice(toDelete[i], 1);
         }
     }
 
     update() {
         this.cleanup();
-        console.log(this.pieces);
+        this.board = this.newEmptyBoard();
         for (let i = 0; i < this.pieces.length; i++) {
             let x = this.pieces[i].x;
             let y = this.pieces[i].y;
             this.board[y][x] = this.pieces[i];
         }
         this.renderAllPieces();
+        console.log(this.board);
     }
 
     renderAllPieces () {

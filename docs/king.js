@@ -3,28 +3,13 @@ class King extends Piece {
         super(99, "king", white, x, y);
         //Kings don't really have a points value, so they have 99
     }
-    
+
     //May want to partically redo this function
     //This validation should really take place in Piece.getValidMoves()
     //So you can just stick the castle moves in the moves list
     //and then the validation will remove them if needed
     movePattern(game) {
-        moves = [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]];
-    
-        //The below checks whether the king can castle, and if so, adds the appropriate moves to the list
-        if (!this.hasMoved) {   //King must not have moved to be able to castle
-            if (!game.board[this.y][this.x + 3].hasMoved) {     //Check if right rook has moved
-                if (game.board[this.x + 1][this.y] == null && game.board[this.x + 2][this.y] == null) {
-                //If spaces inbetween are unobstructed
-                    moves.append([0, 2]);   //Append castle move
-                }
-            } 
-            if (!game.board[this.y][this.x - 4].hasMoved) {     //Repeat the above for left rook
-                if (game.board[this.x - 1][this.y] == null && game.board[this.x - 2][this.y] == null && game.board[this.x - 3][this.y] == null) {
-                    moves.append([0, -2]);
-                }
-            }
-        }
+        let moves = [[1, 1], [1, 0], [1, -1], [0, 1], [0, -1], [-1, 1], [-1, 0], [-1, -1]];
         return moves
     }
 
@@ -32,16 +17,27 @@ class King extends Piece {
     //I've put it here instead of in Piece.getValidMoves to avoid clutter,
     //since that function is already really massive as it is.
     castleCheck(game) {
-        moves = [];
+        let moves = [];
+        console.log(game.board);
         if (!this.hasMoved) {
+        //If the king hasn't moved (necessary for castle)
+            console.log("the king hasn't moved");
             if (!game.board[this.y][this.x+3].hasMoved) {
+            //If the rook to the right of the king hasn't moved
+                console.log("right rook hasn't moved");
                 if (game.board[this.y][this.x+1] == null && game.board[this.y][this.x+2] == null) {
-                    moves.append([0,2]);
+                //If the spaces between the two are empty
+                    console.log("right zone empty");
+                    moves.push([0,2]);
+                    //Add the castle to the list of moves
                 }
             }
             if (!game.board[this.y][this.x-4].hasMoved) {
-                if (game.board[this.y][this.x-1] == null && game.board[this.y][this.x-2] == null && gameboard[this.y][this.x-3] == null) {
-                    moves.append([0,-2]);
+            //Repear above for rook to the left of the king
+                console.log("left rook hasn't moved");
+                if (game.board[this.y][this.x-1] == null && game.board[this.y][this.x-2] == null && game.board[this.y][this.x-3] == null) {
+                    console.log("left zone empty");
+                    moves.push([0,-2]);
                 }
             }
         }
@@ -49,14 +45,14 @@ class King extends Piece {
     }
 
     checkCheck(game) {
-        check = false;
-        for (i = 0; i < game.pieces.length; i++) {
+        let check = false;
+        for (let i = 0; i < game.pieces.length; i++) {
             if (this.white != game.pieces[i].white) {
                 //Tried to use i/j for move but ended up
                 //overwriting count variable. Whoops!
-                x = this.x - game.pieces[i].x;
-                y = this.y - game.pieces[i].y;
-                vector = [y, x];
+                let x = this.x - game.pieces[i].x;
+                let y = this.y - game.pieces[i].y;
+                let vector = [y, x];
                 if (game.pieces[i].getValidMoves().includes(vector)) {
                     check = true;
                 }
@@ -66,20 +62,21 @@ class King extends Piece {
     }
 
     checkmateCheck(game) {
-        check = false;
+        let check = false;
         //These if statements exist because the white king is always index 0
         //in the game.pieces array, and the black king is always index 1.
         //This consistency is the easiest way to check for checkmate.
+        let index;
         if (this.white) {
             index = 0;
         }
         else {
             index = 1;
         }
-        for (i = -1; i <= 1; i++) {
-            for (j = -1; j <= 1; j++) {
+        for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
                 if (!check) {
-                    tempgame = game;
+                    let tempgame = game;
                     tempgame.pieces[index].move(j, i);
                     check = tempgame.pieces[index].checkCheck();
                 }
