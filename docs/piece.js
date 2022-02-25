@@ -84,6 +84,7 @@ class Piece {
             let newY = this.y + j;
             //Variables for new coordinates
             if (!this.hasMoved) {
+            //If this hasn't moves
                 if (this.type == "pawn" && Math.abs(j) == 2) {
                 //If this is a pawn moving two spaces
                     game.pieces.push(new GhostPawn(this.white, this.x, this.y + 0.5 * j, newY));
@@ -184,14 +185,16 @@ class Piece {
     getValidMoves(game) {
         let validMoves = [];
         let moves = this.movePattern();
+        moves = this.removeOOB(moves);
         let kills = this.killPattern();
+        kills = this.removeOOB(kills);
         if (this.type == "knight") {
-            moves = this.removeOOB(moves);
             return moves
         }
         else if (this.type == "king") {
-            moves = this.removeOOB(moves);
-            let castle = this.castleCheck();
+            moves = this.sortMoves(moves);
+            kills = null;
+            let castle = this.castleCheck(game);
             //Check if the king can castle
             if (castle != []) {
             //If it can:
@@ -203,7 +206,6 @@ class Piece {
             }
         }
         else {
-            console.log(moves);
             //Sort moves into directions
             moves = this.sortMoves(moves);
             kills = this.sortMoves(kills);
@@ -218,59 +220,72 @@ class Piece {
                     if (game.board[newY][newX] != null || blocked) {
                     //If the new space is occupied, or if this direction is blocked
                         blocked = true;
-                        movesToDelete.push([j][i]);
+                        movesToDelete.push([j, i]);
                     }
                 }
                 let killsToDelete = [];
                 blocked = false
                 for (let i = 0; i < kills[j].length; i ++) {
-                //For each move in current direction
+                //For each kill in current direction
+                    console.log("current kill:")
+                    console.log(kills[j][i])
                     let newX = this.x + kills[j][i][1];
                     let newY = this.y + kills[j][i][0];
                     if (game.board[newY][newX] == null || blocked) {
                     //If the new space isn't occupied, remove the kill
                     //but don't mark the direction as blocked
-                        movesToDelete.push([j, i]);
+                        killsToDelete.push([j, i]);
+                        console.log("i think the new space is empty or this way is blocked");
                     }
                     else if (game.board[newY][newX].white == this.white) {
                     //If the new space is occupied by an ally
+                        console.log("i think the new space is occupied by friend");
                         killsToDelete.push([j, i]);
                         blocked = true;
+                        //Mark the direction as blocked and remove the kill
                     }
                     else {
                     //If the new space is occupied by an enemy
+                        console.log("i think the new space is occupied by enemy");
                         blocked = true;
                         //Mark the direction as blocked but don't remove the kill
                     }
                 }
-                console.log('moves');
+                console.log('moves to bin:');
                 console.log(movesToDelete);
-                console.log('kills');
+                console.log('kills to bin:');
                 console.log(killsToDelete);
                 //Two more backwards for loops, like in Piece.removeOOB
                 if (movesToDelete.length > 0) {
-                    for (let i = movesToDelete.length; i >= 0; i--) {
+                    for (let i = movesToDelete.length - 1; i >= 0; i--) {
                         moves[movesToDelete[i][0]].splice(movesToDelete[i][1], 1);
                     }
                 }
                 if (killsToDelete.length > 0) {
-                    for (let i = killsToDelete.length; i >= 0; i--) {
+                    for (let i = killsToDelete.length - 1; i >= 0; i--) {
                         kills[killsToDelete[i][0]].splice(killsToDelete[i][1], 1);
                     }
                 }
             }
         }
+        console.log(moves)
+        console.log(kills)
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < moves[i].length; j++) {
                 validMoves.push(moves[i][j]);
             }
-            for (let j = 0; j < kills[i].length; j++) {
-                validMoves.push(kills[i][j]);
+            if (kills != null) {
+                for (let j = 0; j < kills[i].length; j++) {
+                    validMoves.push(kills[i][j]);
+                }
             }
         }
         return validMoves
     }
     renderPiece() {
+        if (this.type == "ghost") {
+            return
+        }
         let x = this.x * 60;
         let y = this.y * 60;
         let colour;
