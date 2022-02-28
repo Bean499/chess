@@ -68,8 +68,6 @@ class Game {
                 toDelete.push(i);
             }
         }
-        console.log(toDelete);
-        console.log(this.pieces);
         for (let i = toDelete.length - 1; i >= 0; i--) {
             this.pieces.splice(toDelete[i], 1);
         }
@@ -84,10 +82,9 @@ class Game {
             this.board[y][x] = this.pieces[i];
         }
         this.renderAllPieces();
-        console.log(this.board);
     }
 
-    renderAllPieces () {
+    renderAllPieces() {
         for (let i = 0; i < this.pieces.length; i++) {
             this.pieces[i].renderPiece();
         }

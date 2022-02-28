@@ -18,29 +18,24 @@ class King extends Piece {
     //since that function is already really massive as it is.
     castleCheck(game) {
         let moves = [];
-        console.log(game.board);
         if (!this.hasMoved) {
-        //If the king hasn't moved (necessary for castle)
-            console.log("the king hasn't moved");
-            if (!game.board[this.y][this.x+3].hasMoved) {
-            //If the rook to the right of the king hasn't moved
-                console.log("right rook hasn't moved");
-                if (game.board[this.y][this.x+1] == null && game.board[this.y][this.x+2] == null) {
-                //If the spaces between the two are empty
-                    console.log("right zone empty");
-                    moves.push([0,2]);
+            //If the king hasn't moved (necessary for castle)
+            if (!game.board[this.y][this.x + 3].hasMoved) {
+                //If the rook to the right of the king hasn't moved
+                if (game.board[this.y][this.x + 1] == null && game.board[this.y][this.x + 2] == null) {
+                    //If the spaces between the two are empty
+                    moves.push([0, 2]);
                     //Add the castle to the list of moves
                 }
             }
-            if (!game.board[this.y][this.x-4].hasMoved) {
-            //Repear above for rook to the left of the king
-                console.log("left rook hasn't moved");
-                if (game.board[this.y][this.x-1] == null && game.board[this.y][this.x-2] == null && game.board[this.y][this.x-3] == null) {
-                    console.log("left zone empty");
-                    moves.push([0,-2]);
+            if (!game.board[this.y][this.x - 4].hasMoved) {
+                //Repear above for rook to the left of the king
+                if (game.board[this.y][this.x - 1] == null && game.board[this.y][this.x - 2] == null && game.board[this.y][this.x - 3] == null) {
+                    moves.push([0, -2]);
                 }
             }
         }
+        console.log(moves);
         return moves
     }
 

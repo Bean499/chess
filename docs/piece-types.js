@@ -6,7 +6,7 @@ class Pawn extends Piece {
     movePattern() {
         let moves = [[1, 0]];
         if (!this.hasMoved) {
-            moves.push([2,0]);
+            moves.push([2, 0]);
         }
         //The base moves are for black pawns
         if (this.white) {   //If the pawn is instead white
@@ -34,12 +34,12 @@ class Pawn extends Piece {
     }
 }
 
-class GhostPawn extends Piece { 
+class GhostPawn extends Piece {
     //Only inherits from piece, since no use for pawn properties (doesn't move)
     constructor(white, x, y, originatorY) {
+        super(0, "ghost", white, x, y);
         this.originatorX = x;
         this.originatorY = originatorY;
-        super(0, "ghost", white, x, y);
     }
 }
 

@@ -34,7 +34,7 @@ var pieceImages = {
 var mode = "game";
 var gameMade = false;
 
-function hide (exclude) {
+function hide(exclude) {
     //Hide everything on startup
     let thingsToHide = [
         "title",
@@ -53,15 +53,15 @@ function hide (exclude) {
 
     for (let i = 0; i < thingsToHide.length; i++) {
         if (exclude.includes(thingsToHide[i])) {
-            $("#"+thingsToHide[i]).show()
+            $("#" + thingsToHide[i]).show()
         }
         else {
-            $("#"+thingsToHide[i]).hide();
+            $("#" + thingsToHide[i]).hide();
         }
     };
 }
 
-function main () {
+function main() {
     //Get p1name
     //Get p2name
     //Get timer value from slider
@@ -142,10 +142,26 @@ function validTestKing(game) {
 function validTestPawn(game) {
     console.log(game.board[6][1].getValidMoves(game));
 }
+
+function moveTestPawn(game) {
+    game = game.board[6][1].move(-2, 0, game);
+    console.log(game.board);
+}
+
+function moveTestKnight(game) {
+    game = game.board[7][1].move(-2, 1, game);
+}
+
+function moveTestCastle(game) {
+    game = game.board[7][5].die(game);
+    game = game.board[7][6].die(game);
+    game.update();
+    game = game.board[7][4].move(0, 2, game);
+}
 // }}}
 
 // P5JS FUNCTIONS ---------------------------------------------------------------------------- {{{
-function preload () {
+function preload() {
     boardImage = loadImage(images + "board.png");
     for (const colour in pieceImages) {
         for (const type in pieceImages[colour]) {
@@ -154,13 +170,16 @@ function preload () {
     };
 }
 
-function setup () {
+function setup() {
     canvas = createCanvas(480, 480);
     background(0, 0, 0);
     //canvas.parent("in-game");   //Put the canvas inside the in-game div
     //hide(["title",canvasName]);
     game = new Game(700, "Ben", "Nick");
-    validTestPawn(game);
+    // moveTestCastle(game);
+    console.log(game.board[7][7].getValidMoves(game));
+    // console.log(game.board[7][7].movePattern());
+    // console.log(game.board[7][7].sortMoves(game.board[7][7].movePattern()));
 }
 
 function draw() {
