@@ -2,6 +2,16 @@
 //Don't forget that the bottom row of the board is index 7
 //So negative values of j move upwards, positive values move downwards
 
+function printSortedMoves(list) {
+    for (i = 0; i < list.length; i++) {
+        for (j = 0; j < list[i].length; j++) {
+            for (k = 0; k < list[i][j].length; k++) {
+                console.log(list[i][j][k]);
+            }
+        }
+    }
+}
+
 class Piece {
     constructor(points, type, white, x, y) {
         this.points = points;
@@ -158,42 +168,37 @@ class Piece {
 
     //TESTED FULLY
     sortMoves(moves) {
-        let sortedMoves = [
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-        ];
+        let sortedMoves = new Array(8);
+        for (let i = 0; i < 8; i++) {
+            sortedMoves[i] = new Array();
+        }
         //Ordered clockwise, starting from straight upwards
         //Up, up-right, right, down-right, down, down-left, left, up-left
         //0	  1	        2      3           4     5          6     7
         for (let i = 0; i < moves.length; i++) {
             console.log("current move:");
+            console.log(i)
             console.log(moves[i]);
             if (moves[i][0] < 0) {
                 if (moves[i][1] < 0) {          //Up Left
                     sortedMoves[7].push(moves[i]);
-                    console.log("up left");
+                    console.log("up left" + i);
                 }
                 else if (moves[i][1] == 0) {    //Up
                     sortedMoves[0].push(moves[i]);
-                    console.log("up")
-                    console.log(sortedMoves[0]);
+                    console.log("up" + i)
+                    console.log(sortedMoves);
                 }
                 else {                          //Up right
                     sortedMoves[1].push(moves[i]);
-                    console.log("up right");
+                    console.log("up right" + i);
                     console.log(sortedMoves);
                 }
             }
             else if (moves[i][0] == 0) {
                 if (moves[i][1] < 0) {          //Left
                     sortedMoves[6].push(moves[i]);
-                    console.log("left");
+                    console.log("left" + i);
                     console.log(sortedMoves);
                 }
                 else if (moves[i][1] == 0) {    //This block should never run!
@@ -201,48 +206,58 @@ class Piece {
                 }
                 else {                          //Right
                     sortedMoves[2].push(moves[i]);
-                    console.log("right")
+                    console.log("right" + i)
                     console.log(sortedMoves);
                 }
             }
             else {
                 if (moves[i][1] < 0) {          //Down left
                     sortedMoves[5].push(moves[i]);
-                    console.log("down left");
+                    console.log("down left" + i);
                     console.log(sortedMoves);
                 }
                 else if (moves[i][1] == 0) {    //Down
                     sortedMoves[4].push(moves[i]);
-                    console.log("down");
+                    console.log("down" + i);
                     console.log(sortedMoves);
                 }
                 else {                          //Down right
                     sortedMoves[3].push(moves[i]);
-                    console.log("down right");
+                    console.log("down right" + i);
                     console.log(sortedMoves);
                 }
             }
         }
-        console.log(sortedMoves);
+        // [
+        //     [[-7,0],[-6,0],[-5,0],[-4,0],[-3,0],[-2,0],[-1,0]],
+        //     [],
+        //     [],
+        //     [],
+        //     [],
+        //     [],
+        //     [[0,-7],[0,-6],[0,-5],[0,-4],[0,-3],[0,-2],[0,-1]],
+        //     []
+        // ]
+        // console.log(JSON.stringify(sortedMoves));
+        // printSortedMoves(sortedMoves);
+        // console.dir(sortedMoves);
         return sortedMoves
+        // return JSON.stringify(sortedMoves)
     }
 
-    //TESTED FULLY
+    //TESTED PARTIALLY - need to test attacking moves
     getValidMoves(game) {
+        let moves = JSON.stringify(this.sortMoves(this.removeOOB(this.movePattern())));
+        moves = JSON.parse(moves);
+        let kills = JSON.stringify(this.sortMoves(this.removeOOB(this.killPattern())));
+        kills = JSON.parse(kills);
         let validMoves = [];
-        let moves = this.movePattern();
-        console.log(moves);
-        moves = this.removeOOB(moves);
-        console.log(moves);
-        let kills = this.killPattern();
-        kills = this.removeOOB(kills);
         if (this.type == "knight") {
             console.log("knight");
-            return moves
+            return this.unsortMoves(moves)
         }
         else if (this.type == "king") {
             console.log("king");
-            moves = this.sortMoves(moves);
             kills = null;
             let castle = this.castleCheck(game);
             //Check if the king can castle
@@ -256,11 +271,6 @@ class Piece {
             }
         }
         else {
-            //Sort moves into directions
-            console.log(moves);
-            moves = this.sortMoves(moves);
-            console.log(moves);
-            kills = this.sortMoves(kills);
             for (let j = 0; j < 8; j++) {
                 //For each direction
                 let movesToDelete = [];
@@ -313,7 +323,7 @@ class Piece {
         }
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < moves[i].length; j++) {
-                validMoves.push(moves[i][j]);
+                validMoves.push(sortedMoves[i][j]);
             }
             if (kills != null) {
                 for (let j = 0; j < kills[i].length; j++) {
