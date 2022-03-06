@@ -28,11 +28,13 @@ var pieceImages = {
         "rook": "",
         "queen": "",
         "king": ""
-    }
+    },
+    "selected": ""
 };
 
 var mode = "game";
 var gameMade = false;
+var renderSpaces = false;
 
 function hide(exclude) {
     //Hide everything on startup
@@ -71,6 +73,14 @@ function main() {
 $("#create-button").click(() => hide("create-lobby"));
 $("#join-button").click(() => hide("join-lobby"));
 $("#profile-button").click(() => hide("profile"));
+
+
+function renderSelectedSpaces(game) {
+    if (game.renderSpaces != false) {
+
+    }
+}
+// }}}
 
 // TESTS ------------------------------------------------------------------------------------- {{{
 function ghostpawntest(game) {
@@ -161,6 +171,66 @@ function moveTestCastle(game) {
 // }}}
 
 // P5JS FUNCTIONS ---------------------------------------------------------------------------- {{{
+function mousePressed() {
+    //Runs when mouse is pressed
+    //mouseX and mouseY are co-ordinates relative to top left of canvas
+    //If inside the canvas:
+    if (0 <= mouseY && mouseY <= 480 && 0 <= mouseX && mouseX <= 480) {
+        //Check which space mouse is on
+        space = [Math.floor(mouseY / 60), Math.floor(mouseX / 60)];
+        //If the user clicks on a piece
+        if (game.board[space[0]][space[1]] != null) {
+            //If no space is selected or if the clicked piece is the same colour as the selected one
+            if (game.renderSpaces == false || game.board[space[0]][space[1]].white == game.board[game.renderSpaces[0]][game.renderSpaces[1]].white) {
+                //If space clicked on is unselected
+                if (!game.board[space[0]][space[1]].selected) {
+                    //Deselct every piece
+                    for (let i = 0; i < game.pieces.length; i++) {
+                        game.pieces[i].selected = false;
+                    }
+                    //If the space clicked on is not empty, and the piece clicked on is unselected
+                    game.board[space[0]][space[1]].selected = true;
+                    //Select the piece
+                    game.renderSpaces = space;
+                    game.selectedSpaces = game.board[space[0]][space[1]].getValidMoves(game);
+                }
+                //If the piece clicked on is selected
+                else if (game.board[space[0]][space[1]].selected) {
+                    game.board[space[0]][space[1]].selected = false;
+                    game.renderSpaces = false;
+                    game.selectedSpaces = null;
+                }
+            }
+            //If the user clicks on a piece of the opposite colour of the selected one
+            else {
+                let j = space[0] - game.renderSpaces[0];
+                let i = space[1] - game.renderSpaces[1];
+                if (JSON.stringify(game.selectedSpaces).includes(JSON.stringify([j, i]))) {
+                    game.board[game.renderSpaces[0]][game.renderSpaces[1]].move(j, i, game);
+                    for (let i = 0; i < game.pieces.length; i++) {
+                        game.pieces[i].selected = false;
+                    }
+                    game.renderSpaces = false;
+                    game.selectedSpaces = null;
+                }
+            }
+        }
+        //If the user clicks on an unoccupied space
+        else {
+            let j = space[0] - game.renderSpaces[0];
+            let i = space[1] - game.renderSpaces[1];
+            if (JSON.stringify(game.selectedSpaces).includes(JSON.stringify([j, i]))) {
+                game.board[game.renderSpaces[0]][game.renderSpaces[1]].move(j, i, game);
+                for (let i = 0; i < game.pieces.length; i++) {
+                    game.pieces[i].selected = false;
+                }
+                game.renderSpaces = false;
+                game.selectedSpaces = null;
+            }
+        }
+    }
+}
+
 function preload() {
     boardImage = loadImage(images + "board.png");
     for (const colour in pieceImages) {
@@ -168,6 +238,7 @@ function preload() {
             pieceImages[colour][type] = loadImage(images + type + "_" + colour + ".png");
         }
     };
+    pieceImages["selected"] = loadImage(images + "selected.png");
 }
 
 function setup() {
@@ -178,12 +249,30 @@ function setup() {
     game = new Game(700, "Ben", "Nick");
     // moveTestCastle(game);
     console.log(game.board[7][7].getValidMoves(game));
+    game.pieces.push(new Pawn(false, 3, 5));
+    game.update();
     // console.log(game.board[7][7].movePattern());
     // console.log(game.board[7][7].sortMoves(game.board[7][7].movePattern()));
 }
 
 function draw() {
+    //Draw board
     image(boardImage, 0, 0);
+    //Draw pieces
     game.renderAllPieces();
+    //If a piece is selected
+    if (game.renderSpaces != false) {
+        //Assign elected piece coordinates to current
+        let current = game.renderSpaces;
+        let sprite = pieceImages["selected"];
+        //For each move the piece can do
+        for (i = 0; i < game.selectedSpaces.length; i++) {
+            //Get x and y coordinates
+            let y = (game.selectedSpaces[i][0] + game.board[current[0]][current[1]].y) * 60;
+            let x = (game.selectedSpaces[i][1] + game.board[current[0]][current[1]].x) * 60;
+            //Place blue circle
+            image(sprite, x, y);
+        }
+    }
 }
 // }}}

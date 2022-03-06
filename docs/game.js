@@ -16,6 +16,10 @@ class Game {
         ];
         this.p1Turn = true;
         this.pieces = [];
+
+        this.renderSpaces = false;
+        this.selectedSpaces = null;
+
         this.newFilledBoard();
     }
 

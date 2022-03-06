@@ -6,7 +6,7 @@ function printSortedMoves(list) {
     for (i = 0; i < list.length; i++) {
         for (j = 0; j < list[i].length; j++) {
             for (k = 0; k < list[i][j].length; k++) {
-                console.log(list[i][j][k]);
+                // console.log(list[i][j][k]);
             }
         }
     }
@@ -56,15 +56,11 @@ class Piece {
     //NOT TESTED
     cardinalMove() {
         let moves = [];
-        for (let i = this.x * -1; i < 8 - this.x; i++) {
-            if (i != 0) {
-                moves.push([0, i]);
-            }
-        }
-        for (let j = this.y * -1; j < 8 - this.y; j++) {
-            if (j != 0) {
-                moves.push([j, 0]);
-            }
+        for (let i = 1; i < 8; i++) {
+            moves.push([i, 0]);
+            moves.push([0, i]);
+            moves.push([i * -1, 0]);
+            moves.push([0, i * -1]);
         }
         return moves
     }
@@ -72,23 +68,11 @@ class Piece {
     //NOT TESTED
     diagonalMove() {
         let moves = [];
-        for (let k = 1; k < 8; k++) {
-            for (let horMultiplier = -1; horMultiplier < 2; horMultiplier++) {
-                for (let vertMultiplier = -1; vertMultiplier < 2; vertMultiplier++) {
-                    if (horMultiplier != 0 && vertMultiplier != 0) {
-                        //Makes sure no stationary move is appended
-                        let i = k * horMultiplier;
-                        let j = k * vertMultiplier;
-
-                        let newX = this.x + i;
-                        let newY = this.y + j;
-
-                        if (newX <= 7 && newX >= 0 && newY <= 7 && newY >= 0) {
-                            moves.push([j, i]);
-                        }
-                    }
-                }
-            }
+        for (let i = 1; i < 8; i++) {
+            moves.push([i, i]);
+            moves.push([i * -1, i]);
+            moves.push([i * -1, i * -1]);
+            moves.push([i, i * -1]);
         }
         return moves
     }
@@ -129,7 +113,7 @@ class Piece {
                 this.hasMoved = true;
             }
             if (game.board[newY][newX] != null) {
-                game = game.board[newY][newX].die();
+                game = game.board[newY][newX].die(game);
             }
             this.x = newX;
             this.y = newY;
@@ -160,7 +144,7 @@ class Piece {
                 //If it went forwards then the indices in toDelete would become
                 //invalid due to the items in moves moving forwards, and their
                 //indicies changing - going backwards means that this doesn't happen
-                moves.splice(i, 1);
+                moves.splice(toDelete[i], 1);
             }
         }
         return moves
@@ -176,88 +160,77 @@ class Piece {
         //Up, up-right, right, down-right, down, down-left, left, up-left
         //0	  1	        2      3           4     5          6     7
         for (let i = 0; i < moves.length; i++) {
-            console.log("current move:");
-            console.log(i)
-            console.log(moves[i]);
+            // console.log("current move:");
+            // console.log(i)
+            // console.log(moves[i]);
             if (moves[i][0] < 0) {
                 if (moves[i][1] < 0) {          //Up Left
                     sortedMoves[7].push(moves[i]);
-                    console.log("up left" + i);
+                    // console.log("up left" + i);
                 }
                 else if (moves[i][1] == 0) {    //Up
                     sortedMoves[0].push(moves[i]);
-                    console.log("up" + i)
-                    console.log(sortedMoves);
+                    // console.log("up" + i)
+                    // console.log(sortedMoves);
                 }
                 else {                          //Up right
                     sortedMoves[1].push(moves[i]);
-                    console.log("up right" + i);
-                    console.log(sortedMoves);
+                    // console.log("up right" + i);
+                    // console.log(sortedMoves);
                 }
             }
             else if (moves[i][0] == 0) {
                 if (moves[i][1] < 0) {          //Left
                     sortedMoves[6].push(moves[i]);
-                    console.log("left" + i);
-                    console.log(sortedMoves);
+                    // console.log("left" + i);
+                    // console.log(sortedMoves);
                 }
                 else if (moves[i][1] == 0) {    //This block should never run!
                     console.log("Uh oh spaghettio");
                 }
                 else {                          //Right
                     sortedMoves[2].push(moves[i]);
-                    console.log("right" + i)
-                    console.log(sortedMoves);
+                    // console.log("right" + i)
+                    // console.log(sortedMoves);
                 }
             }
             else {
                 if (moves[i][1] < 0) {          //Down left
                     sortedMoves[5].push(moves[i]);
-                    console.log("down left" + i);
-                    console.log(sortedMoves);
+                    // console.log("down left" + i);
+                    // console.log(sortedMoves);
                 }
                 else if (moves[i][1] == 0) {    //Down
                     sortedMoves[4].push(moves[i]);
-                    console.log("down" + i);
-                    console.log(sortedMoves);
+                    // console.log("down" + i);
+                    // console.log(sortedMoves);
                 }
                 else {                          //Down right
                     sortedMoves[3].push(moves[i]);
-                    console.log("down right" + i);
-                    console.log(sortedMoves);
+                    // console.log("down right" + i);
+                    // console.log(sortedMoves);
                 }
             }
         }
-        // [
-        //     [[-7,0],[-6,0],[-5,0],[-4,0],[-3,0],[-2,0],[-1,0]],
-        //     [],
-        //     [],
-        //     [],
-        //     [],
-        //     [],
-        //     [[0,-7],[0,-6],[0,-5],[0,-4],[0,-3],[0,-2],[0,-1]],
-        //     []
-        // ]
-        // console.log(JSON.stringify(sortedMoves));
-        // printSortedMoves(sortedMoves);
-        // console.dir(sortedMoves);
+        // for (let i = 0; i < 8; i++) {
+        //     for (let j = 0; j < sortedMoves[i].length; j++) {
+
+        //     }
+        // }
         return sortedMoves
         // return JSON.stringify(sortedMoves)
     }
 
     //TESTED PARTIALLY - need to test attacking moves
     getValidMoves(game) {
+        // console.log(this.movePattern());
         let moves = JSON.stringify(this.sortMoves(this.removeOOB(this.movePattern())));
         moves = JSON.parse(moves);
         let kills = JSON.stringify(this.sortMoves(this.removeOOB(this.killPattern())));
         kills = JSON.parse(kills);
         let validMoves = [];
-        if (this.type == "knight") {
-            console.log("knight");
-            return this.unsortMoves(moves)
-        }
-        else if (this.type == "king") {
-            console.log("king");
+        if (this.type == "king") {
+            // console.log("king");
             kills = null;
             let castle = this.castleCheck(game);
             //Check if the king can castle
@@ -270,60 +243,78 @@ class Piece {
                 }
             }
         }
-        else {
-            for (let j = 0; j < 8; j++) {
-                //For each direction
-                let movesToDelete = [];
-                let blocked = false;
+        for (let j = 0; j < 8; j++) {
+            //For each direction
+            let movesToDelete = [];
+            let blocked = false;
+            if (moves[j] != []) {
                 for (let i = 0; i < moves[j].length; i++) {
                     //For each move in current direction
+                    // console.log("Current move:");
+                    // console.log(moves[j][i]);
                     let newX = this.x + moves[j][i][1];
                     let newY = this.y + moves[j][i][0];
                     if (game.board[newY][newX] != null || blocked) {
                         //If the new space is occupied, or if this direction is blocked
-                        blocked = true;
+                        // console.log("I think this space is either occupied or the direction is blocked");
+                        if (this.type != "knight") {
+                            blocked = true;
+                        }
                         movesToDelete.push([j, i]);
                     }
                 }
-                let killsToDelete = [];
-                blocked = false
-                for (let i = 0; i < kills[j].length; i++) {
-                    //For each kill in current direction
-                    let newX = this.x + kills[j][i][1];
-                    let newY = this.y + kills[j][i][0];
-                    if (game.board[newY][newX] == null || blocked) {
-                        //If the new space isn't occupied, remove the kill
-                        //but don't mark the direction as blocked
-                        killsToDelete.push([j, i]);
-                    }
-                    else if (game.board[newY][newX].white == this.white) {
-                        //If the new space is occupied by an ally
-                        killsToDelete.push([j, i]);
-                        blocked = true;
-                        //Mark the direction as blocked and remove the kill
-                    }
-                    else {
-                        //If the new space is occupied by an enemy
-                        blocked = true;
-                        //Mark the direction as blocked but don't remove the kill
+            }
+            let killsToDelete = [];
+            blocked = false
+            if (kills != null) {
+                if (kills[j] != []) {
+                    for (let i = 0; i < kills[j].length; i++) {
+                        //For each kill in current direction
+                        // console.log("Current kill:");
+                        let newX = this.x + kills[j][i][1];
+                        let newY = this.y + kills[j][i][0];
+                        if (game.board[newY][newX] == null || blocked) {
+                            //If the new space isn't occupied, remove the kill
+                            //but don't mark the direction as blocked
+                            // console.log("I think this space is empty or the direction is blocked")
+                            killsToDelete.push([j, i]);
+                        }
+                        else if (game.board[newY][newX].white == this.white) {
+                            //If the new space is occupied by an ally
+                            // console.log("I think this direction is blocked by an ally");
+                            killsToDelete.push([j, i]);
+                            if (this.type != "knight") {
+                                blocked = true;
+                            }
+                            //Mark the direction as blocked and remove the kill
+                        }
+                        else {
+                            //If the new space is occupied by an enemy
+                            // console.log("I think this space is occupied by an enemy");
+                            if (this.type != "knight") {
+                                blocked = true;
+                            }
+                            //Mark the direction as blocked but don't remove the kill
+                        }
+                        // console.log(blocked)
                     }
                 }
-                //Two more backwards for loops, like in Piece.removeOOB
-                if (movesToDelete.length > 0) {
-                    for (let i = movesToDelete.length - 1; i >= 0; i--) {
-                        moves[movesToDelete[i][0]].splice(movesToDelete[i][1], 1);
-                    }
+            }
+            //Two more backwards for loops, like in Piece.removeOOB
+            if (movesToDelete.length > 0) {
+                for (let i = movesToDelete.length - 1; i >= 0; i--) {
+                    moves[movesToDelete[i][0]].splice(movesToDelete[i][1], 1);
                 }
-                if (killsToDelete.length > 0) {
-                    for (let i = killsToDelete.length - 1; i >= 0; i--) {
-                        kills[killsToDelete[i][0]].splice(killsToDelete[i][1], 1);
-                    }
+            }
+            if (killsToDelete.length > 0) {
+                for (let i = killsToDelete.length - 1; i >= 0; i--) {
+                    kills[killsToDelete[i][0]].splice(killsToDelete[i][1], 1);
                 }
             }
         }
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < moves[i].length; j++) {
-                validMoves.push(sortedMoves[i][j]);
+                validMoves.push(moves[i][j]);
             }
             if (kills != null) {
                 for (let j = 0; j < kills[i].length; j++) {
