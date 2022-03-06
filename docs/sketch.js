@@ -171,6 +171,15 @@ function moveTestCastle(game) {
 // }}}
 
 // P5JS FUNCTIONS ---------------------------------------------------------------------------- {{{
+function deselect(game) {
+    game.renderSpaces = false;
+    game.selectedSpaces = null;
+    for (let i = 0; i < game.pieces.length; i++) {
+        game.pieces[i].selected = false;
+    }
+    return game
+}
+
 function mousePressed() {
     //Runs when mouse is pressed
     //mouseX and mouseY are co-ordinates relative to top left of canvas
@@ -182,23 +191,19 @@ function mousePressed() {
         if (game.board[space[0]][space[1]] != null) {
             //If no space is selected or if the clicked piece is the same colour as the selected one
             if (game.renderSpaces == false || game.board[space[0]][space[1]].white == game.board[game.renderSpaces[0]][game.renderSpaces[1]].white) {
-                //If space clicked on is unselected
+                //If piece clicked on is unselected
                 if (!game.board[space[0]][space[1]].selected) {
                     //Deselct every piece
-                    for (let i = 0; i < game.pieces.length; i++) {
-                        game.pieces[i].selected = false;
-                    }
-                    //If the space clicked on is not empty, and the piece clicked on is unselected
+                    game = deselect(game);
+                    //Select the piece clicked on
                     game.board[space[0]][space[1]].selected = true;
-                    //Select the piece
                     game.renderSpaces = space;
                     game.selectedSpaces = game.board[space[0]][space[1]].getValidMoves(game);
                 }
                 //If the piece clicked on is selected
                 else if (game.board[space[0]][space[1]].selected) {
-                    game.board[space[0]][space[1]].selected = false;
-                    game.renderSpaces = false;
-                    game.selectedSpaces = null;
+                    //Deselect it
+                    game = deselect(game);
                 }
             }
             //If the user clicks on a piece of the opposite colour of the selected one
@@ -207,11 +212,7 @@ function mousePressed() {
                 let i = space[1] - game.renderSpaces[1];
                 if (JSON.stringify(game.selectedSpaces).includes(JSON.stringify([j, i]))) {
                     game.board[game.renderSpaces[0]][game.renderSpaces[1]].move(j, i, game);
-                    for (let i = 0; i < game.pieces.length; i++) {
-                        game.pieces[i].selected = false;
-                    }
-                    game.renderSpaces = false;
-                    game.selectedSpaces = null;
+                    game = deselect(game);
                 }
             }
         }
@@ -221,12 +222,8 @@ function mousePressed() {
             let i = space[1] - game.renderSpaces[1];
             if (JSON.stringify(game.selectedSpaces).includes(JSON.stringify([j, i]))) {
                 game.board[game.renderSpaces[0]][game.renderSpaces[1]].move(j, i, game);
-                for (let i = 0; i < game.pieces.length; i++) {
-                    game.pieces[i].selected = false;
-                }
-                game.renderSpaces = false;
-                game.selectedSpaces = null;
             }
+            game = deselect(game);
         }
     }
 }

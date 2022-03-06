@@ -84,6 +84,38 @@ class Game {
             let x = this.pieces[i].x;
             let y = this.pieces[i].y;
             this.board[y][x] = this.pieces[i];
+            //If this is a pawn
+            if (this.pieces[i].type == "pawn") {
+                //And if it has reached the opposite side of the board
+                if ((this.pieces[i].white && this.pieces[i].y == 0) || (!this.pieces[i].white && this.pieces[i].y == 7)) {
+                    let promote;
+                    let promotions = ["queen", "rook", "bishop", "knight"];
+                    
+                    //Setting attributes to variable so I don't need to keep writing this.pieces[i]
+                    let colour = this.pieces[i].white;
+                    let x = this.pieces[i].x;
+                    let y = this.pieces[i].y;
+
+                    let objects = {
+                        "queen": new Queen(colour, x, y),
+                        "rook": new Rook(colour, x, y),
+                        "bishop": new Bishop(colour, x, y),
+                        "knight": new Knight(colour, x, y)
+                    };
+
+                    //While the user hasn't entered a valid promotion choice
+                    while (!promotions.includes(promote)) {
+                        //Prompt popup, defaults to queen
+                        promote = prompt("Your pawn reached the other side! What type of piece do you want to promote it to?", "queen");
+                        //Sanitise input
+                        promote = promote.toLowerCase();
+                    }
+                    
+                    //Kill the pawn and add the new piece
+                    this.pieces[i].die(this);
+                    this.pieces.push(objects[promote]);
+                }
+            }
         }
         this.renderAllPieces();
     }
