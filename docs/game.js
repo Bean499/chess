@@ -107,6 +107,11 @@ class Game {
                     while (!promotions.includes(promote)) {
                         //Prompt popup, defaults to queen
                         promote = prompt("Your pawn reached the other side! What type of piece do you want to promote it to?", "queen");
+                        //Some browsers will block pop-up prompts, in which case null is returned
+                        //This will catch that possible error by making the pawn into a queen
+                        if (promote == null) {
+                            promote = "queen"
+                        }
                         //Sanitise input
                         promote = promote.toLowerCase();
                     }

@@ -168,6 +168,12 @@ function moveTestCastle(game) {
     game.update();
     game = game.board[7][4].move(0, 2, game);
 }
+
+function checkTest(game) {
+    game.board[0][3].white = true;
+    check = game.board[0][4].checkCheck(game);
+    return check
+}
 // }}}
 
 // P5JS FUNCTIONS ---------------------------------------------------------------------------- {{{
@@ -191,8 +197,8 @@ function mousePressed() {
         if (game.board[space[0]][space[1]] != null) {
             //If no space is selected or if the clicked piece is the same colour as the selected one
             if (game.renderSpaces == false || game.board[space[0]][space[1]].white == game.board[game.renderSpaces[0]][game.renderSpaces[1]].white) {
-                //If piece clicked on is unselected
-                if (!game.board[space[0]][space[1]].selected) {
+                //If piece clicked on is unselected and it's that player's turn
+                if (!game.board[space[0]][space[1]].selected && game.board[space[0]][space[1]].white == game.p1Turn) {
                     //Deselct every piece
                     game = deselect(game);
                     //Select the piece clicked on
@@ -212,6 +218,7 @@ function mousePressed() {
                 let i = space[1] - game.renderSpaces[1];
                 if (JSON.stringify(game.selectedSpaces).includes(JSON.stringify([j, i]))) {
                     game.board[game.renderSpaces[0]][game.renderSpaces[1]].move(j, i, game);
+                    game.p1Turn = !game.p1Turn;
                     game = deselect(game);
                 }
             }
@@ -222,6 +229,7 @@ function mousePressed() {
             let i = space[1] - game.renderSpaces[1];
             if (JSON.stringify(game.selectedSpaces).includes(JSON.stringify([j, i]))) {
                 game.board[game.renderSpaces[0]][game.renderSpaces[1]].move(j, i, game);
+                game.p1Turn = !game.p1Turn;
             }
             game = deselect(game);
         }
@@ -244,12 +252,7 @@ function setup() {
     //canvas.parent("in-game");   //Put the canvas inside the in-game div
     //hide(["title",canvasName]);
     game = new Game(700, "Ben", "Nick");
-    // moveTestCastle(game);
-    console.log(game.board[7][7].getValidMoves(game));
-    game.pieces.push(new Pawn(false, 3, 5));
-    game.update();
-    // console.log(game.board[7][7].movePattern());
-    // console.log(game.board[7][7].sortMoves(game.board[7][7].movePattern()));
+    //console.log(checkTest(game));
 }
 
 function draw() {

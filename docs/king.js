@@ -43,12 +43,16 @@ class King extends Piece {
         let check = false;
         for (let i = 0; i < game.pieces.length; i++) {
             if (this.white != game.pieces[i].white) {
+                console.log("current piece:");
+                console.log([game.pieces[i].y, game.pieces[i].x]);
                 //Tried to use i/j for move but ended up
                 //overwriting count variable. Whoops!
                 let x = this.x - game.pieces[i].x;
                 let y = this.y - game.pieces[i].y;
                 let vector = [y, x];
-                if (game.pieces[i].getValidMoves().includes(vector)) {
+                console.log(vector);
+                console.log(game.pieces[i].getValidMoves(game))
+                if (JSON.stringify(game.pieces[i].getValidMoves(game)).includes(JSON.stringify(vector))) {
                     check = true;
                 }
             }
