@@ -1,0 +1,11 @@
+This document intends to roughly chart what should happen in what order in the main game,
+since just writing it is a very daunting task without any planning.
+
+While neither king is in check:
+    While it is a player's turn:
+        Decrement the timer every second
+        If the currently active player attempts a move:
+            Accept it
+            Toggle the boolean that tracks which player is moving
+        If the currently inactive player attempts a move:
+            Reject it

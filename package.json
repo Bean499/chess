@@ -1,0 +1,23 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "description": "A chess game made in JavaScript",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bean499/chess.git"
+  },
+  "author": "Ben Robinson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bean499/chess/issues"
+  },
+  "homepage": "https://github.com/Bean499/chess#readme",
+  "devDependencies": {
+    "electron": "^17.1.2"
+  }
+}
