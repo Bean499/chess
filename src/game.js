@@ -7,7 +7,7 @@ class Player {
 }
 
 class Game {
-    constructor(timer, p1Name, p2Name) {
+    constructor(timer, p1Name, p2Name, fillBoard = true) {
         this.timerMax = timer;
         this.timerCurrent = 0;
         this.players = [
@@ -22,7 +22,18 @@ class Game {
         //List of that piece's moves to render
         this.selectedSpaces = null;
 
-        this.newFilledBoard();
+        //Neither king starts in checkmate
+        this.whiteCheckmate = false;
+        this.blackCheckmate = false;
+
+        if (fillBoard) {
+            this.newFilledBoard();
+        }
+    }
+
+    checkmateUpdate() {
+        this.whiteCheckmate = this.pieces[0].checkmateCheck(this);
+        this.blackCheckmate = this.pieces[1].checkmateCheck(this);
     }
 
     newEmptyBoard() {
@@ -129,6 +140,9 @@ class Game {
                     }
                 }
             }
+        }
+        if (cleanup) {
+            this.checkmateUpdate();
         }
         // console.log(this.pieces);
         this.renderAllPieces()

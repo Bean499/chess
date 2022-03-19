@@ -254,12 +254,12 @@ function mousePressed() {
             game = deselect(game);
         }
     }
-    else {
-        let whitecheck = this.pieces[0].checkmateCheck(game)
-        let blackcheck = this.pieces[1].checkmateCheck(game)
-        console.log("Is the white king in checkmate?", whitecheck);
-        console.log("Is the black king in checkmate?", blackcheck);
-    }
+    // else {
+    //     let whitecheck = game.pieces[0].checkmateCheck(game)
+    //     let blackcheck = game.pieces[1].checkmateCheck(game)
+    //     console.log("Is the white king in checkmate?", whitecheck);
+    //     console.log("Is the black king in checkmate?", blackcheck);
+    // }
 }
 
 function preload() {
@@ -282,25 +282,34 @@ function setup() {
 }
 
 function draw() {
-    //Draw board
-    image(boardImage, 0, 0);
-    //Draw pieces
-    game.renderAllPieces();
-    //If a piece is selected
-    if (game.renderSpaces != false) {
-        //Assign elected piece coordinates to current
-        let current = game.renderSpaces;
-        let sprite = pieceImages["selected"];
-        //For each move the piece can do
-        for (i = 0; i < game.selectedSpaces.length; i++) {
-            if (game.board[current[0]][current[1]] != null) {
-                //Get x and y coordinates
-                let y = (game.selectedSpaces[i][0] + game.board[current[0]][current[1]].y) * 60;
-                let x = (game.selectedSpaces[i][1] + game.board[current[0]][current[1]].x) * 60;
-                //Place blue circle
-                image(sprite, x, y);
+    // let whiteCheckmate = game.pieces[0].checkmateCheck(game);
+    // let blackCheckmate = game.pieces[1].checkmateCheck(game);
+    if (!game.blackCheckmate && !game.whiteCheckmate) {
+        //Draw board
+        image(boardImage, 0, 0);
+        //Draw pieces
+        game.renderAllPieces();
+        //If a piece is selected
+        if (game.renderSpaces != false) {
+            //Assign elected piece coordinates to current
+            let current = game.renderSpaces;
+            let sprite = pieceImages["selected"];
+            //For each move the piece can do
+            for (i = 0; i < game.selectedSpaces.length; i++) {
+                if (game.board[current[0]][current[1]] != null) {
+                    //Get x and y coordinates
+                    let y = (game.selectedSpaces[i][0] + game.board[current[0]][current[1]].y) * 60;
+                    let x = (game.selectedSpaces[i][1] + game.board[current[0]][current[1]].x) * 60;
+                    //Place blue circle
+                    image(sprite, x, y);
+                }
             }
         }
+    }
+    else {
+        clear();
+        fill(50);
+        text("checkmate!!!!!!!!!!!!!!", 0, 0, 480, 480);
     }
 }
 // }}}

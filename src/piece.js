@@ -38,9 +38,9 @@ function clone(game) {
             pieces.push(new GhostPawn(current.white, current.x, current.y, current.originatorY));
         }
     }
-    let copy = new Game(game.timerMax, game.p1Name, game.p2Name);
+    let copy = new Game(game.timerMax, game.p1Name, game.p2Name, false);
     copy.pieces = pieces;
-    copy.update();
+    copy.update(false);
     return copy;
 }
 
@@ -476,7 +476,7 @@ class Piece {
             validMoves.splice(toDelete[i], 1);
         }
         // console.log(game.pieces);
-        game.update();
+        game.update(false);
         // console.log(game.pieces);
         return validMoves
     }
