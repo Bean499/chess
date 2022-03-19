@@ -12,6 +12,38 @@ function printSortedMoves(list) {
     }
 }
 
+function clone(game) {
+    pieces = [];
+    for (i = 0; i < game.pieces.length; i++) {
+        current = game.pieces[i];
+        if (current.type == "pawn") {
+            pieces.push(new Pawn(current.white, current.x, current.y));
+        }
+        else if (current.type == "king") {
+            pieces.push(new King(current.white, current.x, current.y));
+        }
+        else if (current.type == "queen") {
+           pieces.push(new Queen(current.white, current.x, current.y));
+        }
+        else if (current.type == "rook") {
+           pieces.push(new Rook(current.white, current.x, current.y));
+        }
+        else if (current.type == "bishop") {
+           pieces.push(new Bishop(current.white, current.x, current.y));
+        }
+        else if (current.type == "knight") {
+           pieces.push(new Knight(current.white, current.x, current.y));
+        }
+        else {
+            pieces.push(new GhostPawn(current.white, current.x, current.y, current.originatorY));
+        }
+    }
+    let copy = new Game(game.timerMax, game.p1Name, game.p2Name);
+    copy.pieces = pieces;
+    copy.update();
+    return copy;
+}
+
 class Piece {
     constructor(points, type, white, x, y) {
         this.points = points;
@@ -35,18 +67,20 @@ class Piece {
     }
 
     //TESTED PARTIALLY - need to test interaction with ghost pawns
-    die(game) {
+    die(game, points = true) {
         if (this.type == "ghost") {     //If ghost pawn (En Passant)
             if (game.p1Turn != this.white) {    //If it's not owned by the current player
                 //(has been actively killed)
-                game.board[this.originatorY][this.originatorX].die();   //Kill the originator
+                game.board[this.originatorY][this.originatorX].die(game);   //Kill the originator
             }
         }
-        if (!this.white) {  //If black piece
-            game.players[0].score += this.points;   //Give points to white
-        }
-        else {              //If white piece
-            game.players[1].score += this.points;   //Give points to black
+        if (points) {
+            if (!this.white) {  //If black piece
+                game.players[0].score += this.points;   //Give points to white
+            }
+            else {              //If white piece
+                game.players[1].score += this.points;   //Give points to black
+            }
         }
         this.x = -1;    //Negative coordinates mark a piece
         this.y = -1;    //for death (see Game.cleanup method)
@@ -78,12 +112,15 @@ class Piece {
     }
 
     //TESTED PARTIALLY
-    move(j, i, game) {
-        let valid = false;
+    move(j, i, game, cleanup = true, valid = false, points = true) {
         let makeGhost = false;
-        for (let x = 0; x < this.getValidMoves(game).length; x++) {
-            if (JSON.stringify(this.getValidMoves(game)[x]) == JSON.stringify([j, i])) {
-                valid = true;
+        if (!valid) {
+            for (let x = 0; x < this.getLegalMoves(game).length; x++) {
+            // for (let x = 0; x < this.getValidMoves(game).length; x++) {
+                if (JSON.stringify(this.getLegalMoves(game)[x]) == JSON.stringify([j, i])) {
+                // if (JSON.stringify(this.getValidMoves(game)[x]) == JSON.stringify([j, i])) {
+                    valid = true;
+                }
             }
         }
         if (valid) {
@@ -92,7 +129,7 @@ class Piece {
             //Variables for new coordinates
             if (!this.hasMoved) {
                 //If this hasn't moves
-                if (this.type == "pawn" && Math.abs(j) == 2) {
+                if (this.type == "pawn" && Math.abs(j) == 2 && cleanup) {
                     //If this is a pawn moving two spaces
                     makeGhost = true;
                     //Make a ghost pawn at the space it moved from
@@ -101,23 +138,23 @@ class Piece {
                     //If this is a king and it's castling
                     if (i > 0) {
                         //If going right
-                        game = game.board[this.y][this.x + 3].move(0, -2, game);
+                        game = game.board[this.y][this.x + 3].move(0, -2, game, true, true);
                         //Move the rook that's to the right
                     }
                     else {
                         //If going left
-                        game = game.board[this.y][this.x - 4].move(0, 3, game);
+                        game = game.board[this.y][this.x - 4].move(0, 3, game, true, true);
                         //Move the rook that's to the left
                     }
                 }
                 this.hasMoved = true;
             }
             if (game.board[newY][newX] != null) {
-                game = game.board[newY][newX].die(game);
+                game = game.board[newY][newX].die(game, points);
             }
             this.x = newX;
             this.y = newY;
-            game.update();
+            game.update(cleanup);
             //Render the new positions of pieces
             if (makeGhost) {
                 game.pieces.push(new GhostPawn(this.white, this.x, this.y - 0.5 * j, this.y));
@@ -231,7 +268,7 @@ class Piece {
         let validMoves = [];
         if (this.type == "king") {
             // console.log("king");
-            kills = null;
+            // kills = null;
             let castle = this.castleCheck(game);
             //Check if the king can castle
             if (castle != []) {
@@ -260,7 +297,14 @@ class Piece {
                         if (this.type != "knight") {
                             blocked = true;
                         }
-                        movesToDelete.push([j, i]);
+                        if (game.board[newY][newX] != null) {
+                            if (game.board[newY][newX].type != "ghost") {
+                                movesToDelete.push([j, i]);
+                            }
+                        }
+                        else {
+                            movesToDelete.push([j, i]);
+                        }
                     }
                 }
             }
@@ -322,12 +366,124 @@ class Piece {
                 }
             }
         }
+        //Remove a king's moves where it would move into check
+        // if (this.type == "king") {
+        //     let toDelete = [];
+        //     for (let piece = 0; piece < game.pieces.length; piece++) {
+        //         if (game.pieces[piece].white != this.white && game.pieces[piece].type != "king" && game.pieces[piece].type != "ghost") {
+        //             let currentMoves = game.pieces[piece].getValidMoves(game);
+        //             for (let kingMove = 0; kingMove < validMoves.length; kingMove ++) {
+        //                 let kingNewX = this.x + validMoves[kingMove][1];
+        //                 let kingNewY = this.y + validMoves[kingMove][0];
+        //                 let kingSpace = [kingNewY, kingNewX];
+        //                 for (let move = 0; move < currentMoves.length; move++) {
+        //                     let newX = game.pieces[piece].x + currentMoves[move][1];
+        //                     let newY = game.pieces[piece].y + currentMoves[move][0];
+        //                     let newSpace = [newY, newX];
+        //                     if (JSON.stringify(newSpace) == JSON.stringify(kingSpace)) {
+        //                         toDelete.push(kingMove);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     }
+        //     console.log(JSON.stringify(validMoves));
+        //     console.log(toDelete);
+        //     toDelete = [...new Set(toDelete)];
+        //     console.log(toDelete)
+        //     for (let i = 0; i < toDelete.length; i++) {
+        //         validMoves.splice(toDelete[i], 1);
+        //     }
+        // }
+        return validMoves
+    }
+
+    getLegalMoves(game) {
+        let validMoves = JSON.stringify(this.getValidMoves(game));
+        console.log(validMoves);
+        validMoves = JSON.parse(validMoves);
+        console.log(validMoves);
+        let king;
+        //Get index in pieces array of allied king
+        if (this.white) {
+            king = 0;
+        }
+        else {
+            king = 1;
+        }
+        let moved = this.hasMoved;
+        //If allied king in check
+        let toDelete = [];
+        let kingX = game.pieces[king].x;
+        let kingY = game.pieces[king].y;
+        let originalY = this.y;
+        let originalX = this.x;
+        let tempgame;
+        let oldgame;
+        for (let move = 0; move < validMoves.length; move++) { 
+            oldgame = clone(game);
+            // tempgame = clone(game);
+            let i = validMoves[move][1];
+            let j = validMoves[move][0];
+            console.log([j,i])
+            let newX = this.x + i;
+            let newY = this.y + j;
+            let kill = false;
+            if (game.board[newY][newX] != null) {
+                kill = true;
+            }
+            if (this.type == "king") {
+                kingX = newX;
+                kingY = newY;
+            }
+            // tempgame = this.move(j, i, tempgame, false, true);
+            // No cleanup, yes prechecked to be valid, no points awarded
+            game = this.move(j, i, game, false, true, false);
+            // if (tempgame.board[kingY][kingX].checkCheck(tempgame)) {
+            if (game.board[kingY][kingX].checkCheck(game)) {
+                console.log("here")
+                toDelete.push(move);
+            }
+            if (kill) {
+                for (i = 0; i < game.pieces.length; i++) {
+                    if (game.pieces[i].x < 0 && game.pieces[i].y < 0) {
+                        console.log("done");
+                        console.log(newY, newX);
+                        game.pieces[i].y = newY;
+                        game.pieces[i].x = newX;
+                    }
+                }
+            }
+            // console.log(tempgame);
+            // console.log(game);
+            // console.log(oldgame);
+            // console.log(game)
+            // game = oldgame;
+            // console.log(game)
+            // console.log(game == oldgame);
+            // game.update();
+            this.x = originalX;
+            this.y = originalY;
+            this.hasMoved = moved;
+        }
+        console.log(toDelete);
+        console.log(toDelete.length)
+        //Originally this for loop incremented - write about it?
+        //Also disappearing queen - this routine doesn't account for moves that kill
+        for (let i = toDelete.length - 1; i >= 0; i--) {
+            console.log("deleted");
+            console.log(i);
+            validMoves.splice(toDelete[i], 1);
+        }
+        // console.log(game.pieces);
+        game.update();
+        // console.log(game.pieces);
         return validMoves
     }
 
     //TESTED FULLY
     renderPiece() {
-        if (this.type == "ghost") {
+        if (this.type.includes("ghost")) {
             return
         }
         let x = this.x * 60;

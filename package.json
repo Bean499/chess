@@ -25,10 +25,21 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.63",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
-    "electron": "^17.1.2"
+    "electron": "^17.1.2",
+    "nodemon": "^2.0.15"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "browserify": "^17.0.0",
+    "dialogs": "^2.0.1",
+    "ejs": "^3.1.6",
+    "electron-squirrel-startup": "^1.0.0",
+    "express": "^4.17.3",
+    "fs": "^0.0.1-security",
+    "jquery": "^3.6.0",
+    "moment": "^2.29.1",
+    "requirejs": "^2.3.6",
+    "smalltalk": "^4.0.7",
+    "socket.io": "^4.4.1"
   },
   "config": {
     "forge": {
@@ -37,7 +48,9 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "chess"
+            "name": "chess",
+            "certificateFile": "./cert.pfx",
+            "certificatePassword": "this-is-a-secret"
           }
         },
         {

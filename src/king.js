@@ -20,38 +20,46 @@ class King extends Piece {
         let moves = [];
         if (!this.hasMoved) {
             //If the king hasn't moved (necessary for castle)
-            if (!game.board[this.y][this.x + 3].hasMoved) {
-                //If the rook to the right of the king hasn't moved
-                if (game.board[this.y][this.x + 1] == null && game.board[this.y][this.x + 2] == null) {
-                    //If the spaces between the two are empty
-                    moves.push([0, 2]);
-                    //Add the castle to the list of moves
+            console.log(this.y);
+            console.log(this.x);
+            console.log(game);
+            console.log(game.bo)
+            if (game.board[this.y][this.x + 3] != null) {
+                if (!game.board[this.y][this.x + 3].hasMoved) {
+                    //If the rook to the right of the king hasn't moved
+                    if (game.board[this.y][this.x + 1] == null && game.board[this.y][this.x + 2] == null) {
+                        //If the spaces between the two are empty
+                        moves.push([0, 2]);
+                        //Add the castle to the list of moves
+                    }
                 }
             }
-            if (!game.board[this.y][this.x - 4].hasMoved) {
-                //Repear above for rook to the left of the king
-                if (game.board[this.y][this.x - 1] == null && game.board[this.y][this.x - 2] == null && game.board[this.y][this.x - 3] == null) {
-                    moves.push([0, -2]);
+            if (game.board[this.y][this.x - 4] != null) {
+                if (!game.board[this.y][this.x - 4].hasMoved) {
+                    //Repear above for rook to the left of the king
+                    if (game.board[this.y][this.x - 1] == null && game.board[this.y][this.x - 2] == null && game.board[this.y][this.x - 3] == null) {
+                        moves.push([0, -2]);
+                    }
                 }
             }
         }
-        console.log(moves);
+        console.log("hi")
         return moves
     }
 
     checkCheck(game) {
         let check = false;
         for (let i = 0; i < game.pieces.length; i++) {
-            if (this.white != game.pieces[i].white) {
-                console.log("current piece:");
-                console.log([game.pieces[i].y, game.pieces[i].x]);
+            if (this.white != game.pieces[i].white && game.pieces[i].type != "king" && game.pieces[i].type != "ghost") {
+                // console.log("current piece:");
+                // console.log([game.pieces[i].y, game.pieces[i].x]);
                 //Tried to use i/j for move but ended up
                 //overwriting count variable. Whoops!
                 let x = this.x - game.pieces[i].x;
                 let y = this.y - game.pieces[i].y;
                 let vector = [y, x];
-                console.log(vector);
-                console.log(game.pieces[i].getValidMoves(game))
+                // console.log(vector);
+                // console.log(game.pieces[i].getValidMoves(game))
                 if (JSON.stringify(game.pieces[i].getValidMoves(game)).includes(JSON.stringify(vector))) {
                     check = true;
                 }
@@ -60,7 +68,7 @@ class King extends Piece {
         return check
     }
 
-    checkmateCheck(game) {
+    checkmateCheckOld(game) {
         let check = false;
         //These if statements exist because the white king is always index 0
         //in the game.pieces array, and the black king is always index 1.
@@ -82,5 +90,20 @@ class King extends Piece {
             }
         }
         return check
+    }
+
+    checkmateCheck(game) {
+        let checkmate = true;
+        let allmoves = [];
+        for (let i = 0; i < game.pieces.length; i ++) {
+            if (game.pieces[i].type != "ghost" && game.pieces[i].white == this.white) {
+                console.log(game.pieces[i], "at", game.pieces[i].y, game.pieces[i].x)
+                if (JSON.stringify([]) != JSON.stringify(game.pieces[i].getLegalMoves(game))) {
+                    checkmate = false;
+                }
+            }
+        }
+        console.log(allmoves)
+        return checkmate
     }
 }

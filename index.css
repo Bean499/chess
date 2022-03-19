@@ -4,4 +4,14 @@ body {
   margin: auto;
   max-width: 38rem;
   padding: 2rem;
+  text-align: center;
+}
+
+.menu-button {
+  font-size: large;
+  margin: 50px;
+}
+
+#back-button {
+  float: left;
 }

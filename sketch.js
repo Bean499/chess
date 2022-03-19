@@ -7,6 +7,9 @@
 //Do this later due to above complications
 //json = $.getJSON("profile.json", data => console.log(data));
 
+
+// const dialogs = require('dialogs');
+
 const images = "img/"
 const canvasName = "defaultCanvas0";
 //Writing this is a pain, so I've put it in a constant
@@ -36,50 +39,6 @@ var mode = "game";
 var gameMade = false;
 var renderSpaces = false;
 
-function hide(exclude) {
-    //Hide everything on startup
-    let thingsToHide = [
-        "title",
-        "in-game",
-        "join-lobby",
-        "create-lobby",
-        "lobby",
-        "profile",
-        "get-name",
-        canvasName
-    ];
-
-    if (!Array.isArray(exclude)) {
-        exclude = [exclude]
-    }
-
-    for (let i = 0; i < thingsToHide.length; i++) {
-        if (exclude.includes(thingsToHide[i])) {
-            $("#" + thingsToHide[i]).show()
-        }
-        else {
-            $("#" + thingsToHide[i]).hide();
-        }
-    };
-}
-
-function main() {
-    //Get p1name
-    //Get p2name
-    //Get timer value from slider
-    game = new Game(timer, p1Name, p2Name);
-}
-
-$("#create-button").click(() => hide("create-lobby"));
-$("#join-button").click(() => hide("join-lobby"));
-$("#profile-button").click(() => hide("profile"));
-
-
-function renderSelectedSpaces(game) {
-    if (game.renderSpaces != false) {
-
-    }
-}
 // }}}
 
 // TESTS ------------------------------------------------------------------------------------- {{{
@@ -174,6 +133,65 @@ function checkTest(game) {
     check = game.board[0][4].checkCheck(game);
     return check
 }
+
+function cloneTest1(game) {
+    var copy = Object.assign(
+        Object.create(
+            Object.getPrototypeOf(game)
+        ),
+        game
+    );
+    copy = copy.board[1][0].move(1,0,clone);
+    console.log(game);
+    console.log(copy);
+}
+
+function cloneTest2(game) {
+    clone = new Game(game.timerMax, game.players[0].name, game.players[1].name);
+    clone.pieces = game.pieces;
+    clone.update();
+    clone = clone.board[1][0].move(1,0,clone,false);
+    console.log(game);
+    console.log(clone);
+}
+
+function cloneTest3(game) {
+    pieces = [];
+    for (i = 0; i < game.pieces.length; i++) {
+        current = game.pieces[i];
+        if (current.type == "pawn") {
+            pieces.push(new Pawn(current.white, current.x, current.y));
+        }
+        else if (current.type == "king") {
+            pieces.push(new King(current.white, current.x, current.y));
+        }
+        else if (current.type == "queen") {
+           pieces.push(new Queen(current.white, current.x, current.y));
+        }
+        else if (current.type == "rook") {
+           pieces.push(new Rook(current.white, current.x, current.y));
+        }
+        else if (current.type == "bishop") {
+           pieces.push(new Bishop(current.white, current.x, current.y));
+        }
+        else if (current.type == "knight") {
+           pieces.push(new Knight(current.white, current.x, current.y));
+        }
+        else {
+            pieces.push(new GhostPawn(current.white, current.x, current.y, current.originatorY));
+        }
+    }
+    clone = new Game(game.timerMax, game.p1Name, game.p2Name);
+    clone.pieces = pieces;
+    clone.update();
+    clone = clone.board[1][0].move(1,0,clone,false);
+    console.log(game);
+    console.log(clone);
+}
+
+function legalTest1(game) {
+    console.log(game.board[1][0].getLegalMoves(game));
+}
 // }}}
 
 // P5JS FUNCTIONS ---------------------------------------------------------------------------- {{{
@@ -204,7 +222,9 @@ function mousePressed() {
                     //Select the piece clicked on
                     game.board[space[0]][space[1]].selected = true;
                     game.renderSpaces = space;
-                    game.selectedSpaces = game.board[space[0]][space[1]].getValidMoves(game);
+                    game.selectedSpaces = game.board[space[0]][space[1]].getLegalMoves(game);
+                    // game.selectedSpaces = game.board[space[0]][space[1]].getLegalMoves(game);
+                    // game.selectedSpaces = game.board[space[0]][space[1]].getValidMoves(game);
                 }
                 //If the piece clicked on is selected
                 else if (game.board[space[0]][space[1]].selected) {
@@ -234,6 +254,12 @@ function mousePressed() {
             game = deselect(game);
         }
     }
+    else {
+        let whitecheck = this.pieces[0].checkmateCheck(game)
+        let blackcheck = this.pieces[1].checkmateCheck(game)
+        console.log("Is the white king in checkmate?", whitecheck);
+        console.log("Is the black king in checkmate?", blackcheck);
+    }
 }
 
 function preload() {
@@ -249,10 +275,10 @@ function preload() {
 function setup() {
     canvas = createCanvas(480, 480);
     background(0, 0, 0);
-    //canvas.parent("in-game");   //Put the canvas inside the in-game div
-    //hide(["title",canvasName]);
+    canvas.parent("in-game");   //Put the canvas inside the in-game div
     game = new Game(700, "Ben", "Nick");
-    //console.log(checkTest(game));
+    //TEST GOES HERE
+    legalTest1(game);
 }
 
 function draw() {
@@ -267,11 +293,13 @@ function draw() {
         let sprite = pieceImages["selected"];
         //For each move the piece can do
         for (i = 0; i < game.selectedSpaces.length; i++) {
-            //Get x and y coordinates
-            let y = (game.selectedSpaces[i][0] + game.board[current[0]][current[1]].y) * 60;
-            let x = (game.selectedSpaces[i][1] + game.board[current[0]][current[1]].x) * 60;
-            //Place blue circle
-            image(sprite, x, y);
+            if (game.board[current[0]][current[1]] != null) {
+                //Get x and y coordinates
+                let y = (game.selectedSpaces[i][0] + game.board[current[0]][current[1]].y) * 60;
+                let x = (game.selectedSpaces[i][1] + game.board[current[0]][current[1]].x) * 60;
+                //Place blue circle
+                image(sprite, x, y);
+            }
         }
     }
 }
