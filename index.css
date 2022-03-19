@@ -15,3 +15,17 @@ body {
 #back-button {
   float: left;
 }
+
+#timeline {
+  margin: 50px;
+  margin-left: 25%;
+  margin-right: 25%;
+  max-width: 960px;
+  /* margin: 50px; */
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+
+#p1, #p2 {
+  margin: 10px;
+}

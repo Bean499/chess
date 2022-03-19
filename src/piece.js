@@ -112,7 +112,7 @@ class Piece {
     }
 
     //TESTED PARTIALLY
-    move(j, i, game, cleanup = true, valid = false, points = true) {
+    move(j, i, game, cleanup = true, valid = false, points = true, append = true) {
         let makeGhost = false;
         if (!valid) {
             for (let x = 0; x < this.getLegalMoves(game).length; x++) {
@@ -158,6 +158,31 @@ class Piece {
             //Render the new positions of pieces
             if (makeGhost) {
                 game.pieces.push(new GhostPawn(this.white, this.x, this.y - 0.5 * j, this.y));
+            }
+            if (append) {
+                let columns = [
+                    "a",
+                    "b",
+                    "c",
+                    "d",
+                    "e",
+                    "f",
+                    "g",
+                    "h"
+                ];
+                let move = "";
+                if (this.type == "knight") {
+                    move = move + "N";
+                }
+                else if (this.type != "pawn") {
+                    move = move + this.type.charAt(0).toUpperCase();
+                }
+                console.log(move)
+                move = move + columns[newX];
+                move = move + (8 - newY);
+                // game.moves.push(move);
+                $("#timeline").append(move + "  ");
+                console.log("moves: ", game.moves);
             }
         }
         //When done (or if the move is invalid), return
@@ -438,7 +463,7 @@ class Piece {
             }
             // tempgame = this.move(j, i, tempgame, false, true);
             // No cleanup, yes prechecked to be valid, no points awarded
-            game = this.move(j, i, game, false, true, false);
+            game = this.move(j, i, game, false, true, false, false);
             // if (tempgame.board[kingY][kingX].checkCheck(tempgame)) {
             if (game.board[kingY][kingX].checkCheck(game)) {
                 console.log("here")

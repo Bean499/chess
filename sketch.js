@@ -278,13 +278,24 @@ function setup() {
     canvas.parent("in-game");   //Put the canvas inside the in-game div
     game = new Game(700, "Ben", "Nick");
     //TEST GOES HERE
-    legalTest1(game);
+    // legalTest1(game);
 }
 
 function draw() {
     // let whiteCheckmate = game.pieces[0].checkmateCheck(game);
     // let blackCheckmate = game.pieces[1].checkmateCheck(game);
     if (!game.blackCheckmate && !game.whiteCheckmate) {
+        //Write whose turn it is
+        let turn;
+        if (game.p1Turn) {
+            turn = "1";
+        }
+        else {
+            turn = "2";
+        }
+        $("#p1").html(game.players[0].name + " | " + game.players[0].score + " points");
+        $("#p2").html(game.players[1].name + " | " + game.players[1].score + " points");
+        $("#p" + turn).css("color","#6a9bff");
         //Draw board
         image(boardImage, 0, 0);
         //Draw pieces

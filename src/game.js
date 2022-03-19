@@ -26,6 +26,8 @@ class Game {
         this.whiteCheckmate = false;
         this.blackCheckmate = false;
 
+        this.moves = [];
+
         if (fillBoard) {
             this.newFilledBoard();
         }
