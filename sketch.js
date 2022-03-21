@@ -22,7 +22,7 @@ var pieceImages = {
         "bishop": "",
         "rook": "",
         "queen": "",
-        "king": ""
+        "king": "",
     },
     "black": {
         "pawn": "",
@@ -30,9 +30,10 @@ var pieceImages = {
         "bishop": "",
         "rook": "",
         "queen": "",
-        "king": ""
+        "king": "",
     },
-    "selected": ""
+    "selected": "",
+    "current": "",
 };
 
 var mode = "game";
@@ -141,7 +142,7 @@ function cloneTest1(game) {
         ),
         game
     );
-    copy = copy.board[1][0].move(1,0,clone);
+    copy = copy.board[1][0].move(1, 0, clone);
     console.log(game);
     console.log(copy);
 }
@@ -150,7 +151,7 @@ function cloneTest2(game) {
     clone = new Game(game.timerMax, game.players[0].name, game.players[1].name);
     clone.pieces = game.pieces;
     clone.update();
-    clone = clone.board[1][0].move(1,0,clone,false);
+    clone = clone.board[1][0].move(1, 0, clone, false);
     console.log(game);
     console.log(clone);
 }
@@ -166,16 +167,16 @@ function cloneTest3(game) {
             pieces.push(new King(current.white, current.x, current.y));
         }
         else if (current.type == "queen") {
-           pieces.push(new Queen(current.white, current.x, current.y));
+            pieces.push(new Queen(current.white, current.x, current.y));
         }
         else if (current.type == "rook") {
-           pieces.push(new Rook(current.white, current.x, current.y));
+            pieces.push(new Rook(current.white, current.x, current.y));
         }
         else if (current.type == "bishop") {
-           pieces.push(new Bishop(current.white, current.x, current.y));
+            pieces.push(new Bishop(current.white, current.x, current.y));
         }
         else if (current.type == "knight") {
-           pieces.push(new Knight(current.white, current.x, current.y));
+            pieces.push(new Knight(current.white, current.x, current.y));
         }
         else {
             pieces.push(new GhostPawn(current.white, current.x, current.y, current.originatorY));
@@ -184,7 +185,7 @@ function cloneTest3(game) {
     clone = new Game(game.timerMax, game.p1Name, game.p2Name);
     clone.pieces = pieces;
     clone.update();
-    clone = clone.board[1][0].move(1,0,clone,false);
+    clone = clone.board[1][0].move(1, 0, clone, false);
     console.log(game);
     console.log(clone);
 }
@@ -270,13 +271,17 @@ function preload() {
         }
     };
     pieceImages["selected"] = loadImage(images + "selected.png");
+    pieceImages["current"] = loadImage(images + "current.png");
+
 }
 
 function setup() {
     canvas = createCanvas(480, 480);
     background(0, 0, 0);
-    canvas.parent("in-game");   //Put the canvas inside the in-game div
-    game = new Game(700, "Ben", "Nick");
+    canvas.parent("game");   //Put the canvas inside the in-game div
+    var p1 = localStorage.p1Name;
+    var p2 = localStorage.p2Name;
+    game = new Game(700, p1, p2);
     //TEST GOES HERE
     // legalTest1(game);
 }
@@ -287,15 +292,19 @@ function draw() {
     if (!game.blackCheckmate && !game.whiteCheckmate) {
         //Write whose turn it is
         let turn;
+        let waiting;
         if (game.p1Turn) {
             turn = "1";
+            waiting = "2";
         }
         else {
             turn = "2";
+            waiting = "1";
         }
         $("#p1").html(game.players[0].name + " | " + game.players[0].score + " points");
         $("#p2").html(game.players[1].name + " | " + game.players[1].score + " points");
-        $("#p" + turn).css("color","#6a9bff");
+        $("#p" + turn).css("color", "#6a9bff");
+        $("#p" + waiting).css("color", "#000000");
         //Draw board
         image(boardImage, 0, 0);
         //Draw pieces
@@ -304,7 +313,9 @@ function draw() {
         if (game.renderSpaces != false) {
             //Assign elected piece coordinates to current
             let current = game.renderSpaces;
-            let sprite = pieceImages["selected"];
+            let selectedSprite = pieceImages["selected"];
+            let currentSprite = pieceImages["current"];
+            image(currentSprite, game.renderSpaces[1] * 60, game.renderSpaces[0] * 60);
             //For each move the piece can do
             for (i = 0; i < game.selectedSpaces.length; i++) {
                 if (game.board[current[0]][current[1]] != null) {
@@ -312,15 +323,31 @@ function draw() {
                     let y = (game.selectedSpaces[i][0] + game.board[current[0]][current[1]].y) * 60;
                     let x = (game.selectedSpaces[i][1] + game.board[current[0]][current[1]].x) * 60;
                     //Place blue circle
-                    image(sprite, x, y);
+                    image(selectedSprite, x, y);
                 }
             }
         }
     }
     else {
+        let winner;
+        if (game.blackCheckmate) {
+            winner = game.players[0].name;
+        }
+        else {
+            winner = game.players[1].name;
+        }
         clear();
-        fill(50);
-        text("checkmate!!!!!!!!!!!!!!", 0, 0, 480, 480);
+        $("#in-game").hide();
+        $("#post-game").html("<h1>" + winner + " wins!!!</h1> <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F06%2Fexplosion-gif-transparent-12.gif&f=1&nofb=1'></img>");
     }
 }
+
+$("#surrender").click(() => {
+    if (game.p1Turn) {
+        game.whiteCheckmate = true;
+    }
+    else {
+        game.blackCheckmate = true;
+    }
+})
 // }}}

@@ -26,8 +26,6 @@ class Game {
         this.whiteCheckmate = false;
         this.blackCheckmate = false;
 
-        this.moves = [];
-
         if (fillBoard) {
             this.newFilledBoard();
         }
@@ -83,7 +81,7 @@ class Game {
     cleanup() {
         let toDelete = [];
         for (let i = 0; i < this.pieces.length; i++) {
-            if (this.pieces[i].x == -1 || (this.pieces[i].type == "ghost" && this.pieces[i].white == this.p1Turn)) {
+            if (this.pieces[i].x == -1 || (this.pieces[i].type == "ghost" && this.pieces[i].white != this.p1Turn)) {
                 toDelete.push(i);
             }
         }
@@ -92,8 +90,8 @@ class Game {
         }
     }
 
-    update(cleanup = true) {
-        if (cleanup) {
+    update(actualMove = true) {
+        if (actualMove) {
             this.cleanup();
         }
         this.board = this.newEmptyBoard();
@@ -105,7 +103,7 @@ class Game {
             }
             //If this is a pawn
             if (this.pieces[i].type == "pawn") {
-                if (cleanup) {
+                if (actualMove) {
                     //And if it has reached the opposite side of the board
                     if ((this.pieces[i].white && this.pieces[i].y == 0) || (!this.pieces[i].white && this.pieces[i].y == 7)) {
                         let promote;
@@ -143,7 +141,7 @@ class Game {
                 }
             }
         }
-        if (cleanup) {
+        if (actualMove) {
             this.checkmateUpdate();
         }
         // console.log(this.pieces);

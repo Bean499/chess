@@ -29,3 +29,15 @@ body {
 #p1, #p2 {
   margin: 10px;
 }
+
+.white {
+  color: #6a9bff;
+}
+
+.black {
+  color: #000000;
+}
+
+#surrender {
+  font-size: medium;
+}

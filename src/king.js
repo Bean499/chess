@@ -95,7 +95,7 @@ class King extends Piece {
     checkmateCheck(game) {
         let checkmate = true;
         let allmoves = [];
-        for (let i = 0; i < game.pieces.length; i ++) {
+        for (let i = 0; i < game.pieces.length; i++) {
             if (game.pieces[i].type != "ghost" && game.pieces[i].white == this.white) {
                 console.log(game.pieces[i], "at", game.pieces[i].y, game.pieces[i].x)
                 if (JSON.stringify([]) != JSON.stringify(game.pieces[i].getLegalMoves(game))) {

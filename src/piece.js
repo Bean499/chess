@@ -67,8 +67,8 @@ class Piece {
     }
 
     //TESTED PARTIALLY - need to test interaction with ghost pawns
-    die(game, points = true) {
-        if (this.type == "ghost") {     //If ghost pawn (En Passant)
+    die(game, points = true, actualMove = true) {
+        if (this.type == "ghost" && actualMove) {     //If ghost pawn (En Passant)
             if (game.p1Turn != this.white) {    //If it's not owned by the current player
                 //(has been actively killed)
                 game.board[this.originatorY][this.originatorX].die(game);   //Kill the originator
@@ -112,7 +112,7 @@ class Piece {
     }
 
     //TESTED PARTIALLY
-    move(j, i, game, cleanup = true, valid = false, points = true, append = true) {
+    move(j, i, game, actualMove = true, valid = false, points = true, append = true) {
         let makeGhost = false;
         if (!valid) {
             for (let x = 0; x < this.getLegalMoves(game).length; x++) {
@@ -129,32 +129,32 @@ class Piece {
             //Variables for new coordinates
             if (!this.hasMoved) {
                 //If this hasn't moves
-                if (this.type == "pawn" && Math.abs(j) == 2 && cleanup) {
+                if (this.type == "pawn" && Math.abs(j) == 2 && actualMove) {
                     //If this is a pawn moving two spaces
                     makeGhost = true;
                     //Make a ghost pawn at the space it moved from
                 }
-                else if (this.type == "king" && Math.abs(i) > 1) {
+                else if (this.type == "king" && Math.abs(i) > 1 && actualMove) {
                     //If this is a king and it's castling
                     if (i > 0) {
                         //If going right
-                        game = game.board[this.y][this.x + 3].move(0, -2, game, true, true);
+                        game = game.board[this.y][this.x + 3].move(0, -2, game, true, true, true, false);
                         //Move the rook that's to the right
                     }
                     else {
                         //If going left
-                        game = game.board[this.y][this.x - 4].move(0, 3, game, true, true);
+                        game = game.board[this.y][this.x - 4].move(0, 3, game, true, true, true, false);
                         //Move the rook that's to the left
                     }
                 }
                 this.hasMoved = true;
             }
-            if (game.board[newY][newX] != null) {
-                game = game.board[newY][newX].die(game, points);
+            if (game.board[newY][newX] != null && game.board[newY][newX].white != this.white) {
+                game = game.board[newY][newX].die(game, points, actualMove);
             }
             this.x = newX;
             this.y = newY;
-            game.update(cleanup);
+            game.update(actualMove);
             //Render the new positions of pieces
             if (makeGhost) {
                 game.pieces.push(new GhostPawn(this.white, this.x, this.y - 0.5 * j, this.y));
@@ -171,17 +171,34 @@ class Piece {
                     "h"
                 ];
                 let move = "";
-                if (this.type == "knight") {
-                    move = move + "N";
+                if (this.type == "king" && Math.abs(i) > 1) {
+                    if (i > 0) {
+                        move = "0-0";
+                    }
+                    else {
+                        move = "0-0-0";
+                    }
                 }
-                else if (this.type != "pawn") {
-                    move = move + this.type.charAt(0).toUpperCase();
+                else {
+                    if (this.type == "knight") {
+                        move = move + "N";
+                    }
+                    else if (this.type != "pawn") {
+                        move = move + this.type.charAt(0).toUpperCase();
+                    }
+                    console.log(move)
+                    move = move + columns[newX];
+                    move = move + (8 - newY);
                 }
-                console.log(move)
-                move = move + columns[newX];
-                move = move + (8 - newY);
                 // game.moves.push(move);
-                $("#timeline").append(move + "  ");
+                let colour;
+                if (this.white) {
+                    colour = "white";
+                }
+                else {
+                    colour = "black";
+                }
+                $("#timeline").append('<span class="' + colour + '">' + move + "  </span>");
                 console.log("moves: ", game.moves);
             }
         }

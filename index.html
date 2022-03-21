@@ -31,9 +31,10 @@
     <h1 class="title">JSChess</h1><br>
     A chess game written in JavaScript.
     <form>
-      <button class="menu-button" id="create-button" formaction="game.html">Play Game</button><br>
+      <!-- <button class="menu-button" id="create-button" formaction="game.html">Play Game</button><br> -->
       <!-- <button class="menu-button" id="join-button">Join lobby</button><br> -->
     </form>
+    <button class="menu-button" id="create-button">Play Game</button><br>
     <button class="menu-button" id="profile-button">Match History</button><br>
   </div>
   <div id="join-lobby">
@@ -53,7 +54,15 @@
     <h1>Profile</h1>
   </div>
   <div id="get-name">
-    Input username
+    <h1>Please enter your names:</h1>
+    <form>
+      <label for="p1Name">Player 1's name:</label>
+      <input type="text" id="p1Name"><br><br>
+      <label for="p2Name">Player 2's name:</label>
+      <input type="text" id="p2Name"><br><br>
+    </form>
+    <button id="go">Start Game</button><br><br>
+    <div id="error"></div>
   </div>
 
 </body>
