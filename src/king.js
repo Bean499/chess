@@ -68,31 +68,7 @@ class King extends Piece {
         return check
     }
 
-    checkmateCheckOld(game) {
-        let check = false;
-        //These if statements exist because the white king is always index 0
-        //in the game.pieces array, and the black king is always index 1.
-        //This consistency is the easiest way to check for checkmate.
-        let index;
-        if (this.white) {
-            index = 0;
-        }
-        else {
-            index = 1;
-        }
-        for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-                if (!check) {
-                    let tempgame = game;
-                    tempgame.pieces[index].move(j, i);
-                    check = tempgame.pieces[index].checkCheck();
-                }
-            }
-        }
-        return check
-    }
-
-    checkmateCheck(game) {
+       checkmateCheck(game) {
         let checkmate = true;
         let allmoves = [];
         for (let i = 0; i < game.pieces.length; i++) {
