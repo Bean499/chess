@@ -6,12 +6,13 @@ Currently most of the trouble will be in getting the visual and internet based p
 * ~~Check the scope of variables in existing files. Add var, const, and let to make things clearer when you come back to the code.~~
 * Make the actual **while** loop that the game runs in
 * ~~Sort out castling by removing the validation from King.movePattern and moving that to Piece.getValidMoves~~
-* Think of a name for the project
+* ~~ink of a name for the project~~
 * ~~Set the project up as an actual [Electron Application](https://www.electronjs.org/)~~
 * ~~Figure out how to import the [P5JS library](p5js.org) and use that to implement the visual aspect of the game~~
 * ~~Figure out how to make it work over the internet~~ *SCRAPPED*
 * UI updates
 * ~~Turn history timeline~~
+* Get NodeJS to work
 * File handling for match history
 ## Useful Links
 * https://www.geeksforgeeks.org/dynamically-execute-javascript-in-electronjs/
