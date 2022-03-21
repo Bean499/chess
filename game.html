@@ -4,7 +4,15 @@
     <meta charset="UTF-8" />
     <title>Hello World!</title>
     <link rel="stylesheet" href="index.css">
-
+  
+    <!-- Remove Electron's additional symbols -->
+    <script>
+      window.nodeRequire = require;
+      delete window.require;
+      delete window.exports;
+      delete window.module;
+    </script>
+  
     <!-- P5JS -->
     <script src="lib/p5.js"></script>
     <script src="lib/p5.sound.min.js"></script>

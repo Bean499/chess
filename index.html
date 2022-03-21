@@ -3,8 +3,16 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Hello World!</title>
+  <title>JSChess</title>
   <link rel="stylesheet" href="index.css">
+
+  <!-- Remove Electron's additional symbols -->
+  <script>
+    window.nodeRequire = require;
+    delete window.require;
+    delete window.exports;
+    delete window.module;
+  </script>
 
   <!-- P5JS -->
   <script src="lib/p5.js"></script>
@@ -22,6 +30,7 @@
 
   <!-- NPM Require -->
   <!-- <script data-main="node_modules" src="node_modules/requirejs/require.js"></script> -->
+
 </head>
 
 <body>
