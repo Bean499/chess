@@ -1,6 +1,6 @@
 # Chess Coursework Project
 This is my year 13 OCR A Level Computer Science coursework. I am coding chess with online multiplayer functionality in Javascript. It will be made using Electron.
-## To-do List:
+## To-do List
 Currently most of the trouble will be in getting the visual and internet based parts to work, since I sorted out almost all of the game's logic in the **3.2.2 Design the Solution** section.
 * ~~**Start testing and writing about modules!**~~
 * ~~Check the scope of variables in existing files. Add var, const, and let to make things clearer when you come back to the code.~~
@@ -13,3 +13,12 @@ Currently most of the trouble will be in getting the visual and internet based p
 * UI updates
 * ~~Turn history timeline~~
 * File handling for match history
+## Useful Links
+* https://www.geeksforgeeks.org/dynamically-execute-javascript-in-electronjs/
+* https://stackoverflow.com/questions/33289110/saving-json-in-electron
+* https://stackoverflow.com/questions/57505082/would-it-be-safe-to-enable-nodeintegration-in-electron-on-a-local-page-that-is-p
+* https://github.com/megahertz/electron-log/blob/master/docs/node-integration.md
+* https://www.electronjs.org/docs/latest/api/webview-tag#nodeintegration
+* https://www.electronjs.org/docs/latest/faq#i-can-not-use-jqueryrequirejsmeteorangularjs-in-electron
+* https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined
+* https://www.electronjs.org/docs/latest/tutorial/context-isolation
