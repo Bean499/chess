@@ -1,0 +1,13 @@
+[
+    {
+        "p1": "Ben",
+        "p2": "Brick",
+        "p1Win": false
+    },
+
+    {
+        "p1": "Josh",
+        "p2": "Dob",
+        "p1Win": true
+    }
+]
