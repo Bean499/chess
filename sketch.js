@@ -341,13 +341,4 @@ function draw() {
         $("#post-game").html("<h1>" + winner + " wins!!!</h1> <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F06%2Fexplosion-gif-transparent-12.gif&f=1&nofb=1'></img>");
     }
 }
-
-$("#surrender").click(() => {
-    if (game.p1Turn) {
-        game.whiteCheckmate = true;
-    }
-    else {
-        game.blackCheckmate = true;
-    }
-})
 // }}}
