@@ -101,12 +101,6 @@ function mousePressed() {
             game = deselect(game);
         }
     }
-    // else {
-    //     let whitecheck = game.pieces[0].checkmateCheck(game)
-    //     let blackcheck = game.pieces[1].checkmateCheck(game)
-    //     console.log("Is the white king in checkmate?", whitecheck);
-    //     console.log("Is the black king in checkmate?", blackcheck);
-    // }
 }
 
 function preload() {
