@@ -1,3 +1,6 @@
+const Dialogs = require('dialogs');
+const dialogs = Dialogs();
+
 class Player {
     constructor(white, name) {
         this.score = 0;         //Scores always start at 0
@@ -9,7 +12,6 @@ class Player {
 class Game {
     constructor(timer, p1Name, p2Name, fillBoard = true) {
         this.timerMax = timer;
-        this.timerCurrent = 0;
         this.players = [
             new Player(true, p1Name),
             new Player(false, p2Name)
@@ -124,19 +126,19 @@ class Game {
                         //While the user hasn't entered a valid promotion choice
                         while (!promotions.includes(promote)) {
                             //Prompt popup, defaults to queen
-                            promote = prompt("Your pawn reached the other side! What type of piece do you want to promote it to?", "queen");
-                            //Some browsers will block pop-up prompts, in which case null is returned
-                            //This will catch that possible error by making the pawn into a queen
-                            if (promote == null || promote == "y") {
-                                promote = "queen"
-                            }
-                            //Sanitise input
-                            promote = promote.toLowerCase();
+                            dialogs.prompt(
+                                "What type of piece should your pawn become?",
+                                "queen",
+                                (value => {
+                                    promote = value.toLowerCase();
+                                })
+                            );
                         }
-                        
+ 
                         //Kill the pawn and add the new piece
-                        this.pieces[i].die(this);
+                        this.pieces[i].die(this, false);
                         this.pieces.push(objects[promote]);
+                        this.update();
                     }
                 }
             }

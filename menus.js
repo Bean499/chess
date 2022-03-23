@@ -38,8 +38,10 @@ $("#back-button").click(() => hide("title"));
 $("#go").click(() => {
     var p1Name = $("#p1Name").val();
     var p2Name = $("#p2Name").val();
+    var timer = $("#timer").val();
     localStorage.p1Name = p1Name;
     localStorage.p2Name = p2Name;
+    localStorage.timer = timer;
     if (p1Name.length <= 0 || p2Name.length <= 0) {
         $("#error").html("You need to enter a value for both names!");
     }
@@ -49,6 +51,3 @@ $("#go").click(() => {
 })
 
 hide(["title"]);
-
-var test = "asdf";
-localStorage.test = test;

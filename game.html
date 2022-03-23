@@ -6,13 +6,19 @@
     <link rel="stylesheet" href="index.css">
   
     <!-- Remove Electron's additional symbols -->
-    <script>
+    <!-- <script>
       window.nodeRequire = require;
       delete window.require;
       delete window.exports;
       delete window.module;
+    </script> -->
+   
+    <!-- Script to allow JQuery and NodeJS from this StackOverflow page:
+    https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined -->
+    <script>
+      if (typeof module === 'object') {window.module = module; module = undefined;}
     </script>
-  
+
     <!-- P5JS -->
     <script src="lib/p5.js"></script>
     <script src="lib/p5.sound.min.js"></script>
@@ -36,6 +42,13 @@
     <script src="src/piece.js"></script>
     <script src="src/piece-types.js"></script>
     <script src="src/king.js"></script>
+
+    <!-- Script to allow JQuery and NodeJS from this StackOverflow page:
+    https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined -->
+    <script>
+      if (window.module) module = window.module;
+    </script>
+
   </head>
 
   <body>
@@ -48,11 +61,17 @@
       <div id="game"></div>
       <div id="p1"></div>
     </div>
-    <div id="post-game"></div>
+    <div id="post-game">
+      <div id="button-container">
+        <button id="save-button">Save Game to Match History</button>
+      </div>
+      <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F06%2Fexplosion-gif-transparent-12.gif&f=1&nofb=1'></img>
+    </div>
   </body>
 
   <!-- Main process needs to be imported after the page's contents are initialised
   due to the use of document.getElemendById, which fails if imported earlier -->
   <script src="sketch.js"></script>
-  <script src="game-menu.js"></script>
+  <script src="game-menus.js"></script>
+  <script src="scoreboard.js"></script>
 </html>

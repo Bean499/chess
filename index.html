@@ -7,11 +7,17 @@
   <link rel="stylesheet" href="index.css">
 
   <!-- Remove Electron's additional symbols -->
-  <script>
+  <!-- <script>
     window.nodeRequire = require;
     delete window.require;
     delete window.exports;
     delete window.module;
+  </script> -->
+
+  <!-- Script to allow JQuery and NodeJS from this StackOverflow page:
+  https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined -->
+  <script>
+    if (typeof module === 'object') {window.module = module; module = undefined;}
   </script>
 
   <!-- P5JS -->
@@ -21,15 +27,19 @@
   <!-- JQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
     crossorigin="anonymous">
-    </script>
+  </script>
 
   <!-- JQuery UI -->
   <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"
     integrity="sha256-xH4q8N0pEzrZMaRmd7gQVcTZiFei+HfRTBPJ1OGXC0k=" crossorigin="anonymous">
-    </script>
+  </script>
 
-  <!-- NPM Require -->
-  <!-- <script data-main="node_modules" src="node_modules/requirejs/require.js"></script> -->
+
+  <!-- Script to allow JQuery and NodeJS from this StackOverflow page:
+  https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined -->
+  <script>
+    if (window.module) module = window.module;
+  </script>
 
 </head>
 
@@ -61,6 +71,13 @@
   </div>
   <div id="profile">
     <h1>Profile</h1>
+    <table id="match-history">
+      <tr>
+        <th>Player 1</th>
+        <th>Player 2</th>
+        <th>Winner</th>
+      </tr>
+    </table>
   </div>
   <div id="get-name">
     <h1>Please enter your names:</h1>
@@ -69,6 +86,8 @@
       <input type="text" id="p1Name"><br><br>
       <label for="p2Name">Player 2's name:</label>
       <input type="text" id="p2Name"><br><br>
+      <label for="timer">Timer:</label>
+      <input type="range" id="timer" min="60" max="900" value="600"><br><br>
     </form>
     <button id="go">Start Game</button><br><br>
     <div id="error"></div>
@@ -76,8 +95,9 @@
 
 </body>
 
-<!-- Main process needs to be imported after the page's contents are initialised
+  <!-- Main process needs to be imported after the page's contents are initialised
   due to the use of document.getElemendById, which fails if imported earlier -->
-<script src="menus.js"></script>
+  <script src="scoreboard.js"></script>
+  <script src="menus.js"></script>
 
 </html>

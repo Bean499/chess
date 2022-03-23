@@ -276,12 +276,26 @@ function preload() {
 }
 
 function setup() {
+    frame = 60;
+    frameRate(frame);
     canvas = createCanvas(480, 480);
     background(0, 0, 0);
     canvas.parent("game");   //Put the canvas inside the in-game div
     var p1 = localStorage.p1Name;
     var p2 = localStorage.p2Name;
-    game = new Game(700, p1, p2);
+    var timer = localStorage.timer;
+    game = new Game(timer, p1, p2);
+
+    counter = 0;
+
+    p1Timer = 0;
+    p1TimerSeconds = 0;
+    p1TimerMinutes = 0;
+
+    p2Timer = 0;
+    p2TimerSeconds = 0;
+    p2TimerMinutes = 0;
+
     //TEST GOES HERE
     // legalTest1(game);
 }
@@ -289,6 +303,39 @@ function setup() {
 function draw() {
     // let whiteCheckmate = game.pieces[0].checkmateCheck(game);
     // let blackCheckmate = game.pieces[1].checkmateCheck(game);
+    counter++;
+    if (counter == frame) {
+        counter = 0;
+        if (game.p1Turn) {
+            p1Timer++;
+        }
+        else {
+            p2Timer++;
+        }
+    }
+    
+    p1TimeRemaining = game.timerMax - p1Timer;
+    p1TimerMinutes = Math.floor(p1TimeRemaining / 60);
+    p1TimerSeconds = p1TimeRemaining % 60;
+    if (p1TimerSeconds.length < 10) {
+        p1TimerSeconds = "0" + String(p1TimerSeconds);
+    }
+    p1TimerText = p1TimerMinutes + ":" + p1TimerSeconds
+    if (p1TimeRemaining == 0) {
+        game.whiteCheckmate = true;
+    }
+
+    p2TimeRemaining = game.timerMax - p2Timer;
+    p2TimerMinutes = Math.floor(p2TimeRemaining / 60);
+    p2TimerSeconds = p2TimeRemaining % 60;
+    if (p2TimerSeconds.length == 1) {
+        p2TimerSeconds = "0" + String(p2TimerSeconds);
+    }
+    p2TimerText = p2TimerMinutes + ":" + p2TimerSeconds
+    if (p2TimeRemaining == 0) {
+        game.blackCheckmate = true;
+    }
+
     if (!game.blackCheckmate && !game.whiteCheckmate) {
         //Write whose turn it is
         let turn;
@@ -301,10 +348,12 @@ function draw() {
             turn = "2";
             waiting = "1";
         }
-        $("#p1").html(game.players[0].name + " | " + game.players[0].score + " points");
-        $("#p2").html(game.players[1].name + " | " + game.players[1].score + " points");
+        $("#p1").html(game.players[0].name + " | " + game.players[0].score + " points" + " | " + p1TimerText);
+        $("#p2").html(game.players[1].name + " | " + game.players[1].score + " points" + " | " + p2TimerText);
         $("#p" + turn).css("color", "#6a9bff");
+        $("#p" + turn).css("font-weight", "bold");
         $("#p" + waiting).css("color", "#000000");
+        $("#p" + waiting).css("font-weight", "normal");
         //Draw board
         image(boardImage, 0, 0);
         //Draw pieces
@@ -338,7 +387,9 @@ function draw() {
         }
         clear();
         $("#in-game").hide();
-        $("#post-game").html("<h1>" + winner + " wins!!!</h1> <img src='https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgifimage.net%2Fwp-content%2Fuploads%2F2017%2F06%2Fexplosion-gif-transparent-12.gif&f=1&nofb=1'></img>");
+        $("#post-game").prepend("<h1>" + winner + " wins!!!</h1>");
+        $("#post-game").show();
+        noLoop();
     }
 }
 // }}}

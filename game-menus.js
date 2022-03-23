@@ -6,3 +6,5 @@ $("#surrender").click(() => {
         game.blackCheckmate = true;
     }
 })
+
+$("#post-game").hide()
