@@ -2,48 +2,6 @@
 //Don't forget that the bottom row of the board is index 7
 //So negative values of j move upwards, positive values move downwards
 
-function printSortedMoves(list) {
-    for (i = 0; i < list.length; i++) {
-        for (j = 0; j < list[i].length; j++) {
-            for (k = 0; k < list[i][j].length; k++) {
-                // console.log(list[i][j][k]);
-            }
-        }
-    }
-}
-
-function clone(game) {
-    pieces = [];
-    for (i = 0; i < game.pieces.length; i++) {
-        current = game.pieces[i];
-        if (current.type == "pawn") {
-            pieces.push(new Pawn(current.white, current.x, current.y));
-        }
-        else if (current.type == "king") {
-            pieces.push(new King(current.white, current.x, current.y));
-        }
-        else if (current.type == "queen") {
-           pieces.push(new Queen(current.white, current.x, current.y));
-        }
-        else if (current.type == "rook") {
-           pieces.push(new Rook(current.white, current.x, current.y));
-        }
-        else if (current.type == "bishop") {
-           pieces.push(new Bishop(current.white, current.x, current.y));
-        }
-        else if (current.type == "knight") {
-           pieces.push(new Knight(current.white, current.x, current.y));
-        }
-        else {
-            pieces.push(new GhostPawn(current.white, current.x, current.y, current.originatorY));
-        }
-    }
-    let copy = new Game(game.timerMax, game.p1Name, game.p2Name, false);
-    copy.pieces = pieces;
-    copy.update(false);
-    return copy;
-}
-
 class Piece {
     constructor(points, type, white, x, y) {
         this.points = points;
@@ -69,9 +27,10 @@ class Piece {
     //TESTED PARTIALLY - need to test interaction with ghost pawns
     die(game, points = true, actualMove = true) {
         if (this.type == "ghost" && actualMove) {     //If ghost pawn (En Passant)
-            if (game.p1Turn != this.white) {    //If it's not owned by the current player
-                //(has been actively killed)
-                game.board[this.originatorY][this.originatorX].die(game);   //Kill the originator
+            //If it's not owned by the current player (has been actively killed)
+            if (game.p1Turn != this.white) {
+                //Kill the originator
+                game.board[this.originatorY][this.originatorX].die(game);   
             }
         }
         if (points) {
@@ -128,7 +87,7 @@ class Piece {
             let newY = this.y + j;
             //Variables for new coordinates
             if (!this.hasMoved) {
-                //If this hasn't moves
+                //If this hasn't moved
                 if (this.type == "pawn" && Math.abs(j) == 2 && actualMove) {
                     //If this is a pawn moving two spaces
                     makeGhost = true;
@@ -149,16 +108,20 @@ class Piece {
                 }
                 this.hasMoved = true;
             }
+            //If the new space isn't empty and is an enemy
             if (game.board[newY][newX] != null && game.board[newY][newX].white != this.white) {
+                //Kill it
                 game = game.board[newY][newX].die(game, points, actualMove);
             }
             this.x = newX;
             this.y = newY;
-            game.update(actualMove);
             //Render the new positions of pieces
+            game.update(actualMove);
+            //If flag for ghost pawn is active, make one
             if (makeGhost) {
                 game.pieces.push(new GhostPawn(this.white, this.x, this.y - 0.5 * j, this.y));
             }
+            //If the move is to be put in the timeline
             if (append) {
                 let columns = [
                     "a",
@@ -171,6 +134,7 @@ class Piece {
                     "h"
                 ];
                 let move = "";
+                //If castle
                 if (this.type == "king" && Math.abs(i) > 1) {
                     if (i > 0) {
                         move = "0-0";
@@ -179,18 +143,21 @@ class Piece {
                         move = "0-0-0";
                     }
                 }
+                //Otherwise
                 else {
+                    //Add the piece's letter
                     if (this.type == "knight") {
                         move = move + "N";
                     }
                     else if (this.type != "pawn") {
                         move = move + this.type.charAt(0).toUpperCase();
                     }
-                    console.log(move)
+                    //Then add the co-ords
                     move = move + columns[newX];
                     move = move + (8 - newY);
                 }
-                // game.moves.push(move);
+                //Determine this piece's colour (for the HTML class
+                //so that white's moves are blue and black's are black)
                 let colour;
                 if (this.white) {
                     colour = "white";
@@ -198,8 +165,8 @@ class Piece {
                 else {
                     colour = "black";
                 }
+                //Append the HTML
                 $("#timeline").append('<span class="' + colour + '">' + move + "  </span>");
-                console.log("moves: ", game.moves);
             }
         }
         //When done (or if the move is invalid), return
@@ -209,10 +176,14 @@ class Piece {
     //TESTED FULLY
     removeOOB(moves) {
         let toDelete = [];
+        //For each move
         for (let i = 0; i < moves.length; i++) {
+            //Get new co-ords
             let newX = this.x + moves[i][1];
             let newY = this.y + moves[i][0];
+            //If out of the board (2D array) index
             if (newX > 7 || newX < 0 || newY > 7 || newY < 0) {
+                //Add to list to delete
                 toDelete.push(i);
             }
         }
@@ -231,6 +202,7 @@ class Piece {
 
     //TESTED FULLY
     sortMoves(moves) {
+        //Initialise 2D array of directions
         let sortedMoves = new Array(8);
         for (let i = 0; i < 8; i++) {
             sortedMoves[i] = new Array();
@@ -302,91 +274,96 @@ class Piece {
 
     //TESTED PARTIALLY - need to test attacking moves
     getValidMoves(game) {
-        // console.log(this.movePattern());
+        //Get moves and kills
         let moves = JSON.stringify(this.sortMoves(this.removeOOB(this.movePattern())));
         moves = JSON.parse(moves);
         let kills = JSON.stringify(this.sortMoves(this.removeOOB(this.killPattern())));
         kills = JSON.parse(kills);
         let validMoves = [];
+        //If it's a king
         if (this.type == "king") {
-            // console.log("king");
-            // kills = null;
             let castle = this.castleCheck(game);
-            //Check if the king can castle
+            //If castle moves are available
             if (castle != []) {
-                //If it can:
+                //For each one
                 for (let i = 0; i < castle.length; i++) {
                     validMoves.push(castle[i]);
                     //Add the castle moves to the validMoves list
-                    //(Validation is done in King.castleCheck)
                 }
             }
         }
+        //For each direction
         for (let j = 0; j < 8; j++) {
-            //For each direction
+            //This bit gets rid of moves that are occupied
+            //or blocked by another piece in front of it
             let movesToDelete = [];
             let blocked = false;
             if (moves[j] != []) {
+                //For each move in current direction
                 for (let i = 0; i < moves[j].length; i++) {
-                    //For each move in current direction
-                    // console.log("Current move:");
-                    // console.log(moves[j][i]);
+                    //Get new co-ords
                     let newX = this.x + moves[j][i][1];
                     let newY = this.y + moves[j][i][0];
+                    //If the new space is occupied, or if this direction is blocked
                     if (game.board[newY][newX] != null || blocked) {
-                        //If the new space is occupied, or if this direction is blocked
-                        // console.log("I think this space is either occupied or the direction is blocked");
+                        //If it's not a knight
                         if (this.type != "knight") {
+                            //Mark direction as blocked
                             blocked = true;
                         }
+                        //If destination space is occupied
                         if (game.board[newY][newX] != null) {
+                            //If not occuppied by a ghost pawn
+                            //(this if statement allows pieces to move
+                            //onto spaces occupied by ghost pawns)
                             if (game.board[newY][newX].type != "ghost") {
+                                //Mark move for deletion
                                 movesToDelete.push([j, i]);
                             }
                         }
+                        //If destination space is unoccupied
+                        //(meaning that this outer if statement
+                        //was triggered by blocked == true)
                         else {
+                            //Delete it
                             movesToDelete.push([j, i]);
                         }
                     }
                 }
             }
+            //From here it's similar to the above but with killing moves,
+            //so empty spaces are rejected but occupied spaces are accepted
             let killsToDelete = [];
             blocked = false
-            if (kills != null) {
-                if (kills[j] != []) {
-                    for (let i = 0; i < kills[j].length; i++) {
-                        //For each kill in current direction
-                        // console.log("Current kill:");
-                        let newX = this.x + kills[j][i][1];
-                        let newY = this.y + kills[j][i][0];
-                        if (game.board[newY][newX] == null || blocked) {
-                            //If the new space isn't occupied, remove the kill
-                            //but don't mark the direction as blocked
-                            // console.log("I think this space is empty or the direction is blocked")
-                            killsToDelete.push([j, i]);
+            //If the current direction has any kills in it
+            if (kills[j] != []) {
+                //For each kill in current direction
+                for (let i = 0; i < kills[j].length; i++) {
+                    let newX = this.x + kills[j][i][1];
+                    let newY = this.y + kills[j][i][0];
+                    //If the new space isn't occupied
+                    if (game.board[newY][newX] == null || blocked) {
+                        //Remove the kill but don't mark the direction as blocked
+                        killsToDelete.push([j, i]);
+                    }
+                    //If the new space is occupied by an ally
+                    else if (game.board[newY][newX].white == this.white) {
+                        //Remove the kill and mark direction as blocked
+                        killsToDelete.push([j, i]);
+                        if (this.type != "knight") {
+                            blocked = true;
                         }
-                        else if (game.board[newY][newX].white == this.white) {
-                            //If the new space is occupied by an ally
-                            // console.log("I think this direction is blocked by an ally");
-                            killsToDelete.push([j, i]);
-                            if (this.type != "knight") {
-                                blocked = true;
-                            }
-                            //Mark the direction as blocked and remove the kill
+                    }
+                    //If the new space is occupied by an enemy
+                    else {
+                        //Mark the direction as blocked but don't remove the kill
+                        if (this.type != "knight") {
+                            blocked = true;
                         }
-                        else {
-                            //If the new space is occupied by an enemy
-                            // console.log("I think this space is occupied by an enemy");
-                            if (this.type != "knight") {
-                                blocked = true;
-                            }
-                            //Mark the direction as blocked but don't remove the kill
-                        }
-                        // console.log(blocked)
                     }
                 }
             }
-            //Two more backwards for loops, like in Piece.removeOOB
+            //Remove stuff that needs removing
             if (movesToDelete.length > 0) {
                 for (let i = movesToDelete.length - 1; i >= 0; i--) {
                     moves[movesToDelete[i][0]].splice(movesToDelete[i][1], 1);
@@ -398,6 +375,7 @@ class Piece {
                 }
             }
         }
+        //Combine moves and kills arrays into one array called validMoves
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < moves[i].length; j++) {
                 validMoves.push(moves[i][j]);
@@ -408,43 +386,14 @@ class Piece {
                 }
             }
         }
-        //Remove a king's moves where it would move into check
-        // if (this.type == "king") {
-        //     let toDelete = [];
-        //     for (let piece = 0; piece < game.pieces.length; piece++) {
-        //         if (game.pieces[piece].white != this.white && game.pieces[piece].type != "king" && game.pieces[piece].type != "ghost") {
-        //             let currentMoves = game.pieces[piece].getValidMoves(game);
-        //             for (let kingMove = 0; kingMove < validMoves.length; kingMove ++) {
-        //                 let kingNewX = this.x + validMoves[kingMove][1];
-        //                 let kingNewY = this.y + validMoves[kingMove][0];
-        //                 let kingSpace = [kingNewY, kingNewX];
-        //                 for (let move = 0; move < currentMoves.length; move++) {
-        //                     let newX = game.pieces[piece].x + currentMoves[move][1];
-        //                     let newY = game.pieces[piece].y + currentMoves[move][0];
-        //                     let newSpace = [newY, newX];
-        //                     if (JSON.stringify(newSpace) == JSON.stringify(kingSpace)) {
-        //                         toDelete.push(kingMove);
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     console.log(JSON.stringify(validMoves));
-        //     console.log(toDelete);
-        //     toDelete = [...new Set(toDelete)];
-        //     console.log(toDelete)
-        //     for (let i = 0; i < toDelete.length; i++) {
-        //         validMoves.splice(toDelete[i], 1);
-        //     }
-        // }
         return validMoves
     }
 
     getLegalMoves(game) {
+        //This method takes the moves from getValidMoves and then
+        //checks whether any would put the king in check.
         let validMoves = JSON.stringify(this.getValidMoves(game));
-        console.log(validMoves);
         validMoves = JSON.parse(validMoves);
-        console.log(validMoves);
         let king;
         //Get index in pieces array of allied king
         if (this.white) {
@@ -453,83 +402,84 @@ class Piece {
         else {
             king = 1;
         }
+        //Store if this piece has moved & original co-ords
+        //(tests whether king get sput in check by actually
+        //performing the move, so these will be restored later)
         let moved = this.hasMoved;
-        //If allied king in check
-        let toDelete = [];
-        let kingX = game.pieces[king].x;
-        let kingY = game.pieces[king].y;
         let originalY = this.y;
         let originalX = this.x;
-        let tempgame;
-        let oldgame;
+        //Array of moves to delete
+        let toDelete = [];
+        //Get co-ords of king
+        let kingX = game.pieces[king].x;
+        let kingY = game.pieces[king].y;
+
+        //For each move in valid moves:
         for (let move = 0; move < validMoves.length; move++) { 
-            oldgame = clone(game);
-            // tempgame = clone(game);
+            //Get move vectors
             let i = validMoves[move][1];
             let j = validMoves[move][0];
-            console.log([j,i])
+            //Get new location
             let newX = this.x + i;
             let newY = this.y + j;
+            //Flag for whether a piece is killed (important
+            //to restore any killed pieces)
             let kill = false;
             if (game.board[newY][newX] != null) {
                 kill = true;
             }
+            //If this is a king then the co-ordinates of the king
+            //will change when it moves. This reflects that.
             if (this.type == "king") {
                 kingX = newX;
                 kingY = newY;
             }
-            // tempgame = this.move(j, i, tempgame, false, true);
-            // No cleanup, yes prechecked to be valid, no points awarded
+            //Tests the move - uses various flags to stop things from running
+            //No cleanup, yes checked to be valid, don't award points, don't add to timeline
             game = this.move(j, i, game, false, true, false, false);
-            // if (tempgame.board[kingY][kingX].checkCheck(tempgame)) {
+            //If this move would put the king in check:
             if (game.board[kingY][kingX].checkCheck(game)) {
-                console.log("here")
+                //Add this move's index to the delete array
                 toDelete.push(move);
             }
+            //If a piece was killed
             if (kill) {
+                //For each piece
                 for (i = 0; i < game.pieces.length; i++) {
+                    //If it is marked for death
                     if (game.pieces[i].x < 0 && game.pieces[i].y < 0) {
-                        console.log("done");
-                        console.log(newY, newX);
+                        //Restore original co-ordinates
                         game.pieces[i].y = newY;
                         game.pieces[i].x = newX;
                     }
                 }
             }
-            // console.log(tempgame);
-            // console.log(game);
-            // console.log(oldgame);
-            // console.log(game)
-            // game = oldgame;
-            // console.log(game)
-            // console.log(game == oldgame);
-            // game.update();
+            //Restore this piece's original details
             this.x = originalX;
             this.y = originalY;
             this.hasMoved = moved;
         }
-        console.log(toDelete);
-        console.log(toDelete.length)
         //Originally this for loop incremented - write about it?
         //Also disappearing queen - this routine doesn't account for moves that kill
+        //Delete each move in the array
         for (let i = toDelete.length - 1; i >= 0; i--) {
-            console.log("deleted");
-            console.log(i);
             validMoves.splice(toDelete[i], 1);
         }
-        // console.log(game.pieces);
+        //Update the board, but don't remove ghost pawns
         game.update(false);
-        // console.log(game.pieces);
         return validMoves
     }
 
     //TESTED FULLY
     renderPiece() {
+        //Don't render ghosts
         if (this.type.includes("ghost")) {
             return
         }
+        //Get coordinates of square in canvas
         let x = this.x * 60;
         let y = this.y * 60;
+        //Get the colour of this piece
         let colour;
         if (this.white) {
             colour = "white";
@@ -537,7 +487,9 @@ class Piece {
         else {
             colour = "black";
         }
+        //Pick the appropriate sprite from the sprites dictionary
         let sprite = pieceImages[colour][this.type];
+        //P5JS image function that renders the image
         image(sprite, x, y);
     }
 }
