@@ -123,22 +123,18 @@ class Game {
                             "knight": new Knight(colour, x, y)
                         };
 
-                        //While the user hasn't entered a valid promotion choice
-                        while (!promotions.includes(promote)) {
-                            //Prompt popup, defaults to queen
-                            dialogs.prompt(
-                                "What type of piece should your pawn become?",
-                                "queen",
-                                (value => {
-                                    promote = value.toLowerCase();
-                                })
-                            );
-                        }
- 
-                        //Kill the pawn and add the new piece
-                        this.pieces[i].die(this, false);
-                        this.pieces.push(objects[promote]);
-                        this.update();
+                        //Prompt popup, defaults to queen
+                        dialogs.prompt(
+                            "What type of piece should your pawn become?",
+                            "queen",
+                            (value => {
+                                //Kill the pawn and add the new piece
+                                promote = value.toLowerCase();
+                                this.pieces[i].die(this, false);
+                                this.pieces.push(objects[promote]);
+                                this.update();
+                            })
+                        ); 
                     }
                 }
             }
