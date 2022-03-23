@@ -386,35 +386,6 @@ class Piece {
                 }
             }
         }
-        //Remove a king's moves where it would move into check
-        // if (this.type == "king") {
-        //     let toDelete = [];
-        //     for (let piece = 0; piece < game.pieces.length; piece++) {
-        //         if (game.pieces[piece].white != this.white && game.pieces[piece].type != "king" && game.pieces[piece].type != "ghost") {
-        //             let currentMoves = game.pieces[piece].getValidMoves(game);
-        //             for (let kingMove = 0; kingMove < validMoves.length; kingMove ++) {
-        //                 let kingNewX = this.x + validMoves[kingMove][1];
-        //                 let kingNewY = this.y + validMoves[kingMove][0];
-        //                 let kingSpace = [kingNewY, kingNewX];
-        //                 for (let move = 0; move < currentMoves.length; move++) {
-        //                     let newX = game.pieces[piece].x + currentMoves[move][1];
-        //                     let newY = game.pieces[piece].y + currentMoves[move][0];
-        //                     let newSpace = [newY, newX];
-        //                     if (JSON.stringify(newSpace) == JSON.stringify(kingSpace)) {
-        //                         toDelete.push(kingMove);
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     console.log(JSON.stringify(validMoves));
-        //     console.log(toDelete);
-        //     toDelete = [...new Set(toDelete)];
-        //     console.log(toDelete)
-        //     for (let i = 0; i < toDelete.length; i++) {
-        //         validMoves.splice(toDelete[i], 1);
-        //     }
-        // }
         return validMoves
     }
 
