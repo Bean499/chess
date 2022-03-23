@@ -1,18 +1,10 @@
-//Currently this is problematic because I can't open local files.
-//Will need to use a hosting website (like Infinity Free) to
-//host the game's profile files, otherwise I won't be able to
-//save data between sessions (which is very important, since the
-//user's name and match history need to be saved).
+// SETUP ------------------------------------------------------------------------------------ {{{
 
-//Do this later due to above complications
-//json = $.getJSON("profile.json", data => console.log(data));
-
-
-// const dialogs = require('dialogs');
-
+//Constant for image directory
 const images = "img/"
-const canvasName = "defaultCanvas0";
+
 //Writing this is a pain, so I've put it in a constant
+const canvasName = "defaultCanvas0";
 
 //This object will hold the P5Image instances for sprites
 var pieceImages = {
@@ -35,10 +27,6 @@ var pieceImages = {
     "selected": "",
     "current": "",
 };
-
-var mode = "game";
-var gameMade = false;
-var renderSpaces = false;
 
 // }}}
 
