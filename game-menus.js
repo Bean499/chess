@@ -7,4 +7,6 @@ $("#surrender").click(() => {
     }
 })
 
+$("#back-button").click(() => window.location.href = "./index.html");
+
 $("#post-game").hide()

@@ -14,6 +14,7 @@ var pieceImages = {
         "rook": "",
         "queen": "",
         "king": "",
+        "ghost": "",
     },
     "black": {
         "pawn": "",
@@ -22,6 +23,7 @@ var pieceImages = {
         "rook": "",
         "queen": "",
         "king": "",
+        "ghost": "",
     },
     "selected": "",
     "current": "",
@@ -107,7 +109,7 @@ function setup() {
     frameRate(frame);
     canvas = createCanvas(480, 480);
     background(0, 0, 0);
-    canvas.parent("game");   //Put the canvas inside the in-game div
+    canvas.parent("game");   //Put the canvas inside the game div
     var p1 = localStorage.p1Name;
     var p2 = localStorage.p2Name;
     var timer = localStorage.timer;
@@ -128,45 +130,40 @@ function setup() {
 }
 
 function draw() {
-    // let whiteCheckmate = game.pieces[0].checkmateCheck(game);
-    // let blackCheckmate = game.pieces[1].checkmateCheck(game);
+    //Frame counter
     counter++;
+    //If counter == framerate then a second has passed
     if (counter == frame) {
+        //Reset frame counter
         counter = 0;
-        if (game.p1Turn) {
-            p1Timer++;
-        }
-        else {
-            p2Timer++;
-        }
+        //Increment current timer
+        if (game.p1Turn) p1Timer++;
+        else p2Timer++;
     }
-    
+    //Calculate remaining time
     p1TimeRemaining = game.timerMax - p1Timer;
+    //Calculate minutes and seconds
     p1TimerMinutes = Math.floor(p1TimeRemaining / 60);
     p1TimerSeconds = p1TimeRemaining % 60;
-    if (p1TimerSeconds.length < 10) {
-        p1TimerSeconds = "0" + String(p1TimerSeconds);
-    }
+    //Stick a zero in front if seconds in single digits
+    if (p1TimerSeconds < 10) p1TimerSeconds = "0" + String(p1TimerSeconds);
+    //Make timer into text
     p1TimerText = p1TimerMinutes + ":" + p1TimerSeconds
-    if (p1TimeRemaining == 0) {
-        game.whiteCheckmate = true;
-    }
+    //Checkmate if timer is zero
+    if (p1TimeRemaining == 0) game.whiteCheckmate = true;
 
+    //Above but for p2
     p2TimeRemaining = game.timerMax - p2Timer;
     p2TimerMinutes = Math.floor(p2TimeRemaining / 60);
     p2TimerSeconds = p2TimeRemaining % 60;
-    if (p2TimerSeconds.length == 1) {
-        p2TimerSeconds = "0" + String(p2TimerSeconds);
-    }
+    if (p2TimerSeconds < 10) p2TimerSeconds = "0" + String(p2TimerSeconds);
     p2TimerText = p2TimerMinutes + ":" + p2TimerSeconds
-    if (p2TimeRemaining == 0) {
-        game.blackCheckmate = true;
-    }
+    if (p2TimeRemaining == 0) game.blackCheckmate = true;
 
     if (!game.blackCheckmate && !game.whiteCheckmate) {
-        //Write whose turn it is
         let turn;
         let waiting;
+        //Set turn variable
         if (game.p1Turn) {
             turn = "1";
             waiting = "2";
@@ -175,16 +172,19 @@ function draw() {
             turn = "2";
             waiting = "1";
         }
+        //Display info
         $("#p1").html(game.players[0].name + " | " + game.players[0].score + " points" + " | " + p1TimerText);
         $("#p2").html(game.players[1].name + " | " + game.players[1].score + " points" + " | " + p2TimerText);
+        //Highlight current player
         $("#p" + turn).css("color", "#6a9bff");
         $("#p" + turn).css("font-weight", "bold");
+        //Unhighlight inactive player
         $("#p" + waiting).css("color", "#000000");
         $("#p" + waiting).css("font-weight", "normal");
         //Draw board
         image(boardImage, 0, 0);
         //Draw pieces
-        game.renderAllPieces();
+        game.renderAllPieces(true);
         //If a piece is selected
         if (game.renderSpaces != false) {
             //Assign elected piece coordinates to current
@@ -205,17 +205,17 @@ function draw() {
         }
     }
     else {
+        //Get name of winning player
         let winner;
-        if (game.blackCheckmate) {
-            winner = game.players[0].name;
-        }
-        else {
-            winner = game.players[1].name;
-        }
+        if (game.blackCheckmate) winner = game.players[0].name;
+        else winner = game.players[1].name;
+        //Empty canvas
         clear();
+        //Hide board and show post-game stuff
         $("#in-game").hide();
         $("#post-game").prepend("<h1>" + winner + " wins!!!</h1>");
         $("#post-game").show();
+        //Stop draw function from running
         noLoop();
     }
 }

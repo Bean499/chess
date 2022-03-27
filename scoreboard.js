@@ -1,45 +1,54 @@
-// const electron = require("electron");
 const fs = require("fs");
 
 function readScoreboard() {
-    return fs.readFileSync("scoreboard.json", "utf8")
+    let contents;
+    try {
+        contents = fs.readFileSync("scoreboard.json", "utf8");
+    }
+    catch (err) {
+        contents = [];
+    }
+    return contents
 }
 
 function writeScoreboard(game) {
+    //Get current match history
     let history = JSON.parse(readScoreboard());
+    //Get which player won
     let p1Win;
-    if (game.whiteCheckmate) {
-        p1Win = false;
-    }
-    else {
-        p1Win = true;
-    }
+    if (game.whiteCheckmate) p1Win = false;
+    else p1Win = true;
+    //Make a new object to append to the list
     let newGame = {
         "p1": game.players[0].name,
         "p2": game.players[1].name,
         "p1Win": p1Win
     }
+    //Add to current match history
     history.push(newGame);
+    //Turn into string
     let text = JSON.stringify(history);
+    //Write to file
     fs.writeFileSync("scoreboard.json", text);
 }
 
 $("#profile-button").click(() => {
+    //Get matches
     let matches = JSON.parse(readScoreboard());
+    //For each match
     for (i = 0; i < matches.length; i++) {
         let winner;
-        if (matches[i]["p1Win"]) {
-            winner = matches[i]["p1"];
-        }
-        else {
-            winner = matches[i]["p2"];
-        }
+        //Get name of winner
+        if (matches[i]["p1Win"]) winner = matches[i]["p1"];
+        else winner = matches[i]["p2"];
+        //Add row to table
         $("#match-history").append("<tr><<td>" + matches[i]["p1"] + "</td><td>" + matches[i]["p2"] + "</td><td>" + winner + "</td></tr>");
     }
 });
 
 $("#save-button").click(() => {
+    //Write game to file
     writeScoreboard(game);
-    console.log(readScoreboard());
+    //Self destruct button
     $("#button-container").html("Game saved!");
 });

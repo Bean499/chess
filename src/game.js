@@ -1,3 +1,4 @@
+
 const Dialogs = require('dialogs');
 const dialogs = Dialogs();
 
@@ -103,19 +104,19 @@ class Game {
             if (x >= 0 && y >= 0) {
                 this.board[y][x] = this.pieces[i];
             }
+            //Promotion algorithm begins here
             //If this is a pawn
             if (this.pieces[i].type == "pawn") {
                 if (actualMove) {
                     //And if it has reached the opposite side of the board
                     if ((this.pieces[i].white && this.pieces[i].y == 0) || (!this.pieces[i].white && this.pieces[i].y == 7)) {
-                        let promote;
-                        let promotions = ["queen", "rook", "bishop", "knight"];
-                        
-                        //Setting attributes to variable so I don't need to keep writing this.pieces[i]
+                        //Setting attributes to variable so I
+                        //don't need to keep writing this.pieces[i]
                         let colour = this.pieces[i].white;
                         let x = this.pieces[i].x;
                         let y = this.pieces[i].y;
 
+                        //Things that can get added to the pieces array
                         let objects = {
                             "queen": new Queen(colour, x, y),
                             "rook": new Rook(colour, x, y),
@@ -128,13 +129,21 @@ class Game {
                             "What type of piece should your pawn become?",
                             "queen",
                             (value => {
-                                //Kill the pawn and add the new piece
-                                promote = value.toLowerCase();
-                                this.pieces[i].die(this, false);
+                                console.log(value)
+                                let promote = value.toLowerCase();
+                                //If the thing the user entered isn't a key in the object
+                                if (!JSON.stringify(Object.keys(objects)).includes(promote)) {
+                                    //Default to queen
+                                    promote = "queen";
+                                }
+                                //Add the new piece to the array
                                 this.pieces.push(objects[promote]);
+                                //Kill the pawn
+                                this.pieces[i].die(this, false);
+                                //Update
                                 this.update();
                             })
-                        ); 
+                        );
                     }
                 }
             }
@@ -146,9 +155,9 @@ class Game {
         this.renderAllPieces()
     }
 
-    renderAllPieces() {
+    renderAllPieces(renderGhosts = false) {
         for (let i = 0; i < this.pieces.length; i++) {
-            this.pieces[i].renderPiece();
+            this.pieces[i].renderPiece(renderGhosts);
         }
     }
 }

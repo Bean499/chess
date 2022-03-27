@@ -30,7 +30,7 @@ class Piece {
             //If it's not owned by the current player (has been actively killed)
             if (game.p1Turn != this.white) {
                 //Kill the originator
-                game.board[this.originatorY][this.originatorX].die(game);   
+                game.board[this.originatorY][this.originatorX].die(game);
             }
         }
         if (points) {
@@ -75,9 +75,9 @@ class Piece {
         let makeGhost = false;
         if (!valid) {
             for (let x = 0; x < this.getLegalMoves(game).length; x++) {
-            // for (let x = 0; x < this.getValidMoves(game).length; x++) {
+                // for (let x = 0; x < this.getValidMoves(game).length; x++) {
                 if (JSON.stringify(this.getLegalMoves(game)[x]) == JSON.stringify([j, i])) {
-                // if (JSON.stringify(this.getValidMoves(game)[x]) == JSON.stringify([j, i])) {
+                    // if (JSON.stringify(this.getValidMoves(game)[x]) == JSON.stringify([j, i])) {
                     valid = true;
                 }
             }
@@ -136,22 +136,14 @@ class Piece {
                 let move = "";
                 //If castle
                 if (this.type == "king" && Math.abs(i) > 1) {
-                    if (i > 0) {
-                        move = "0-0";
-                    }
-                    else {
-                        move = "0-0-0";
-                    }
+                    if (i > 0) move = "0-0";
+                    else move = "0-0-0";
                 }
                 //Otherwise
                 else {
                     //Add the piece's letter
-                    if (this.type == "knight") {
-                        move = move + "N";
-                    }
-                    else if (this.type != "pawn") {
-                        move = move + this.type.charAt(0).toUpperCase();
-                    }
+                    if (this.type == "knight") move = move + "N";
+                    else if (this.type != "pawn") move = move + this.type.charAt(0).toUpperCase();
                     //Then add the co-ords
                     move = move + columns[newX];
                     move = move + (8 - newY);
@@ -159,14 +151,10 @@ class Piece {
                 //Determine this piece's colour (for the HTML class
                 //so that white's moves are blue and black's are black)
                 let colour;
-                if (this.white) {
-                    colour = "white";
-                }
-                else {
-                    colour = "black";
-                }
+                if (this.white) colour = "white";
+                else colour = "black";
                 //Append the HTML
-                $("#timeline").append('<span class="' + colour + '">' + move + "  </span>");
+                $("#timeline").append("<span class='" + colour + "'>" + move + "  </span>");
             }
         }
         //When done (or if the move is invalid), return
@@ -188,12 +176,9 @@ class Piece {
             }
         }
         if (toDelete.length > 0) {
+            //Backwards for loop to prevent array
+            //index from being out of bounds
             for (let i = toDelete.length - 1; i >= 0; i--) {
-                //This probably looks like a really weird for loop
-                //It goes backwards through the list of items to delete
-                //If it went forwards then the indices in toDelete would become
-                //invalid due to the items in moves moving forwards, and their
-                //indicies changing - going backwards means that this doesn't happen
                 moves.splice(toDelete[i], 1);
             }
         }
@@ -211,65 +196,41 @@ class Piece {
         //Up, up-right, right, down-right, down, down-left, left, up-left
         //0	  1	        2      3           4     5          6     7
         for (let i = 0; i < moves.length; i++) {
-            // console.log("current move:");
-            // console.log(i)
-            // console.log(moves[i]);
             if (moves[i][0] < 0) {
                 if (moves[i][1] < 0) {          //Up Left
                     sortedMoves[7].push(moves[i]);
-                    // console.log("up left" + i);
                 }
                 else if (moves[i][1] == 0) {    //Up
                     sortedMoves[0].push(moves[i]);
-                    // console.log("up" + i)
-                    // console.log(sortedMoves);
                 }
                 else {                          //Up right
                     sortedMoves[1].push(moves[i]);
-                    // console.log("up right" + i);
-                    // console.log(sortedMoves);
                 }
             }
             else if (moves[i][0] == 0) {
                 if (moves[i][1] < 0) {          //Left
                     sortedMoves[6].push(moves[i]);
-                    // console.log("left" + i);
-                    // console.log(sortedMoves);
                 }
                 else if (moves[i][1] == 0) {    //This block should never run!
                     console.log("Uh oh spaghettio");
                 }
                 else {                          //Right
                     sortedMoves[2].push(moves[i]);
-                    // console.log("right" + i)
-                    // console.log(sortedMoves);
                 }
             }
             else {
                 if (moves[i][1] < 0) {          //Down left
                     sortedMoves[5].push(moves[i]);
-                    // console.log("down left" + i);
-                    // console.log(sortedMoves);
                 }
                 else if (moves[i][1] == 0) {    //Down
                     sortedMoves[4].push(moves[i]);
-                    // console.log("down" + i);
-                    // console.log(sortedMoves);
                 }
                 else {                          //Down right
                     sortedMoves[3].push(moves[i]);
-                    // console.log("down right" + i);
-                    // console.log(sortedMoves);
                 }
             }
         }
-        // for (let i = 0; i < 8; i++) {
-        //     for (let j = 0; j < sortedMoves[i].length; j++) {
-
-        //     }
-        // }
         return sortedMoves
-        // return JSON.stringify(sortedMoves)
     }
 
     //TESTED PARTIALLY - need to test attacking moves
@@ -394,28 +355,19 @@ class Piece {
         //checks whether any would put the king in check.
         let validMoves = JSON.stringify(this.getValidMoves(game));
         validMoves = JSON.parse(validMoves);
-        let king;
-        //Get index in pieces array of allied king
-        if (this.white) {
-            king = 0;
-        }
-        else {
-            king = 1;
-        }
         //Store if this piece has moved & original co-ords
-        //(tests whether king get sput in check by actually
+        //(tests whether king gets put in check by actually
         //performing the move, so these will be restored later)
         let moved = this.hasMoved;
         let originalY = this.y;
         let originalX = this.x;
         //Array of moves to delete
         let toDelete = [];
-        //Get co-ords of king
-        let kingX = game.pieces[king].x;
-        let kingY = game.pieces[king].y;
+        //Get index of king
+        let king; if (this.white) king = 0; else king = 1;
 
         //For each move in valid moves:
-        for (let move = 0; move < validMoves.length; move++) { 
+        for (let move = 0; move < validMoves.length; move++) {
             //Get move vectors
             let i = validMoves[move][1];
             let j = validMoves[move][0];
@@ -428,17 +380,11 @@ class Piece {
             if (game.board[newY][newX] != null) {
                 kill = true;
             }
-            //If this is a king then the co-ordinates of the king
-            //will change when it moves. This reflects that.
-            if (this.type == "king") {
-                kingX = newX;
-                kingY = newY;
-            }
             //Tests the move - uses various flags to stop things from running
             //No cleanup, yes checked to be valid, don't award points, don't add to timeline
             game = this.move(j, i, game, false, true, false, false);
             //If this move would put the king in check:
-            if (game.board[kingY][kingX].checkCheck(game)) {
+            if (game.pieces[king].checkCheck(game)) {
                 //Add this move's index to the delete array
                 toDelete.push(move);
             }
@@ -471,9 +417,9 @@ class Piece {
     }
 
     //TESTED FULLY
-    renderPiece() {
+    renderPiece(renderGhosts = false) {
         //Don't render ghosts
-        if (this.type.includes("ghost")) {
+        if (this.type.includes("ghost") && !renderGhosts) {
             return
         }
         //Get coordinates of square in canvas

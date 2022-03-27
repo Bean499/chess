@@ -45,29 +45,11 @@
 
 <body>
   <button id="back-button">Back</button>
-  <div id="in-game">In-game<br></div>
   <div id="title">
     <h1 class="title">JSChess</h1><br>
-    A chess game written in JavaScript.
-    <form>
-      <!-- <button class="menu-button" id="create-button" formaction="game.html">Play Game</button><br> -->
-      <!-- <button class="menu-button" id="join-button">Join lobby</button><br> -->
-    </form>
+    A chess game written in JavaScript.<br>
     <button class="menu-button" id="create-button">Play Game</button><br>
     <button class="menu-button" id="profile-button">Match History</button><br>
-  </div>
-  <div id="join-lobby">
-    <h1>Join Lobby</h1>
-    <form id="join-lobby-form">
-      <input type="text" maxlength="4" id="room-code" value="Room code"><br>
-      <button type="submit" class="menu-button">Join</button><br>
-    </form>
-  </div>
-  <div id="create-lobby">
-    <h1>Create Lobby</h1>
-  </div>
-  <div id="lobby">
-    <h1>Lobby</h1>
   </div>
   <div id="profile">
     <h1>Profile</h1>
@@ -86,8 +68,8 @@
       <input type="text" id="p1Name"><br><br>
       <label for="p2Name">Player 2's name:</label>
       <input type="text" id="p2Name"><br><br>
-      <label for="timer">Timer:</label>
-      <input type="range" id="timer" min="60" max="900" value="600"><br><br>
+      <label for="timer">Timer: <span id="sliderValue">10:00</span></label>
+      <input type="range" id="timer" min="60" max="900" value="600" onchange="updateSlider(this.value)"><br><br>
     </form>
     <button id="go">Start Game</button><br><br>
     <div id="error"></div>

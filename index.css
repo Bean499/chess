@@ -21,7 +21,6 @@ body {
   margin-left: 25%;
   margin-right: 25%;
   max-width: 960px;
-  /* margin: 50px; */
   overflow-x: scroll;
   white-space: nowrap;
 }
@@ -40,4 +39,9 @@ body {
 
 #surrender {
   font-size: medium;
+}
+
+#boom {
+  height: 480px;
+  width: 480px;
 }

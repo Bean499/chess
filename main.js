@@ -13,7 +13,6 @@ const createWindow = () => {
   })
 
   win.loadFile('index.html')
-  // win.loadFile('game.html')
 }
 
 app.whenReady().then(() => {
