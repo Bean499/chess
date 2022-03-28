@@ -184,7 +184,7 @@ function draw() {
         //Draw board
         image(boardImage, 0, 0);
         //Draw pieces
-        game.renderAllPieces(true);
+        game.renderAllPieces();
         //If a piece is selected
         if (game.renderSpaces != false) {
             //Assign elected piece coordinates to current

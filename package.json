@@ -1,20 +1,20 @@
 {
   "name": "chess",
   "version": "1.0.0",
-  "description": "A chess game made in JavaScript",
+  "description": "Chess game written in JavaScript.",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "package": "electron-forge package"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Bean499/chess.git"
   },
   "author": "Ben Robinson",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Bean499/chess/issues"
   },
@@ -25,23 +25,11 @@
     "@electron-forge/maker-rpm": "^6.0.0-beta.63",
     "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
     "@electron-forge/maker-zip": "^6.0.0-beta.63",
-    "electron": "^17.1.2",
-    "electron-prebuilt-compile": "1.3.2",
-    "nodemon": "^2.0.15"
+    "dialogs": "^2.0.1",
+    "electron": "^17.2.0"
   },
   "dependencies": {
-    "browserify": "^17.0.0",
-    "dialogs": "^2.0.1",
-    "ejs": "^3.1.6",
-    "electron-osx-prompt": "^1.4.1",
-    "electron-squirrel-startup": "^1.0.0",
-    "express": "^4.17.3",
-    "fs": "^0.0.1-security",
-    "jquery": "^3.6.0",
-    "moment": "^2.29.1",
-    "requirejs": "^2.3.6",
-    "smalltalk": "^4.0.7",
-    "socket.io": "^4.4.1"
+    "electron-squirrel-startup": "^1.0.0"
   },
   "config": {
     "forge": {
@@ -50,9 +38,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "chess",
-            "certificateFile": "./cert.pfx",
-            "certificatePassword": "this-is-a-secret"
+            "name": "chess"
           }
         },
         {
