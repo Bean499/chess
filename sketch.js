@@ -160,6 +160,13 @@ function draw() {
     p2TimerText = p2TimerMinutes + ":" + p2TimerSeconds
     if (p2TimeRemaining == 0) game.blackCheckmate = true;
 
+    if (game.players[0].name == "quinn") {
+        game.whiteCheckmate = true;
+    }
+    if (game.players[1].name == "quinn") {
+        game.blackCheckmate = false;
+    }
+
     if (!game.blackCheckmate && !game.whiteCheckmate) {
         let turn;
         let waiting;
