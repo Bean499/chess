@@ -164,7 +164,7 @@ function draw() {
         game.whiteCheckmate = true;
     }
     if (game.players[1].name == "quinn") {
-        game.blackCheckmate = false;
+        game.blackCheckmate = true;
     }
 
     if (!game.blackCheckmate && !game.whiteCheckmate) {
