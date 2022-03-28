@@ -32,10 +32,7 @@ function updateSlider(val) {
 }
 
 $("#create-button").click(() => hide("get-name"));
-$("#profile-button").click(() => {
-    hide("profile");
-    matchUpdate();
-});
+$("#profile-button").click(() => hide("profile"));
 $("#back-button").click(() => hide("title"));
 
 $("#go").click(() => {
