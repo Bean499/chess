@@ -1,25 +1,4 @@
 # Chess Coursework Project
-This is my year 13 OCR A Level Computer Science coursework. I am coding chess with online multiplayer functionality in Javascript. It will be made using Electron.
-## To-do List
-Currently most of the trouble will be in getting the visual and internet based parts to work, since I sorted out almost all of the game's logic in the **3.2.2 Design the Solution** section.
-* ~~**Start testing and writing about modules!**~~
-* ~~Check the scope of variables in existing files. Add var, const, and let to make things clearer when you come back to the code.~~
-* Make the actual **while** loop that the game runs in
-* ~~Sort out castling by removing the validation from King.movePattern and moving that to Piece.getValidMoves~~
-* ~~ink of a name for the project~~
-* ~~Set the project up as an actual [Electron Application](https://www.electronjs.org/)~~
-* ~~Figure out how to import the [P5JS library](p5js.org) and use that to implement the visual aspect of the game~~
-* ~~Figure out how to make it work over the internet~~ *SCRAPPED*
-* UI updates
-* ~~Turn history timeline~~
-* Get NodeJS to work
-* File handling for match history
-## Useful Links
-* https://www.geeksforgeeks.org/dynamically-execute-javascript-in-electronjs/
-* https://stackoverflow.com/questions/33289110/saving-json-in-electron
-* https://stackoverflow.com/questions/57505082/would-it-be-safe-to-enable-nodeintegration-in-electron-on-a-local-page-that-is-p
-* https://github.com/megahertz/electron-log/blob/master/docs/node-integration.md
-* https://www.electronjs.org/docs/latest/api/webview-tag#nodeintegration
-* https://www.electronjs.org/docs/latest/faq#i-can-not-use-jqueryrequirejsmeteorangularjs-in-electron
-* https://stackoverflow.com/questions/32621988/electron-jquery-is-not-defined
-* https://www.electronjs.org/docs/latest/tutorial/context-isolation
+This is my year 13 OCR A Level Computer Science coursework. I am coding a multiplayer chess game in Javascript. It uses Electron and Electron Forge to run and be distributed.
+## Installation
+Head over to the releases tab on the right and go to the latest version. Download `chess-win32-x64.zip` and open chess.exe to play the game.
