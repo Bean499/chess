@@ -5,8 +5,9 @@ const images = "img/"
 //Writing this is a pain, so I've put it in a constant
 const canvasName = "defaultCanvas0";
 
-//This object will hold the P5Image instances for sprites
+//This 2D object will hold the P5Image instances for sprites
 var pieceImages = {
+    //First sub-object for white pieces
     "white": {
         "pawn": "",
         "knight": "",
@@ -16,6 +17,7 @@ var pieceImages = {
         "king": "",
         "ghost": "",
     },
+    //Second sub-object for white pieces
     "black": {
         "pawn": "",
         "knight": "",
@@ -25,6 +27,7 @@ var pieceImages = {
         "king": "",
         "ghost": "",
     },
+    //Individual entries for misc sprites
     "selected": "",
     "current": "",
 };
@@ -160,12 +163,8 @@ function draw() {
     p2TimerText = p2TimerMinutes + ":" + p2TimerSeconds
     if (p2TimeRemaining == 0) game.blackCheckmate = true;
 
-    if (game.players[0].name == "quinn") {
-        game.whiteCheckmate = true;
-    }
-    if (game.players[1].name == "quinn") {
-        game.blackCheckmate = true;
-    }
+    if (game.players[0].name == "quinn") game.whiteCheckmate = true; 
+    if (game.players[1].name == "quinn") game.blackCheckmate = true; 
 
     if (!game.blackCheckmate && !game.whiteCheckmate) {
         let turn;

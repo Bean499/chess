@@ -417,22 +417,14 @@ class Piece {
     }
 
     //TESTED FULLY
-    renderPiece(renderGhosts = false) {
-        //Don't render ghosts
-        if (this.type.includes("ghost") && !renderGhosts) {
-            return
-        }
+    renderPiece() {
         //Get coordinates of square in canvas
         let x = this.x * 60;
         let y = this.y * 60;
         //Get the colour of this piece
         let colour;
-        if (this.white) {
-            colour = "white";
-        }
-        else {
-            colour = "black";
-        }
+        if (this.white) colour = "white";
+        else colour = "black";
         //Pick the appropriate sprite from the sprites dictionary
         let sprite = pieceImages[colour][this.type];
         //P5JS image function that renders the image

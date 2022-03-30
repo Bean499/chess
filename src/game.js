@@ -1,4 +1,5 @@
-
+//Import NPM module for prompt function
+//(used in pawn promotion in update method)
 const Dialogs = require('dialogs');
 const dialogs = Dialogs();
 
