@@ -1,4 +1,4 @@
-//Moves are in the format [j,i] which are unit vectors up/right respectively
+//Moves are in the format [j,i] which are unit vectors down/right respectively
 //Don't forget that the bottom row of the board is index 7
 //So negative values of j move upwards, positive values move downwards
 
@@ -72,40 +72,45 @@ class Piece {
 
     //TESTED PARTIALLY
     move(j, i, game, actualMove = true, valid = false, points = true, append = true) {
+        //Flag for whether to make ghost pawns
         let makeGhost = false;
+        //If the move hasn't been checked to be valid
         if (!valid) {
+            //For each legal move this can perform
             for (let x = 0; x < this.getLegalMoves(game).length; x++) {
-                // for (let x = 0; x < this.getValidMoves(game).length; x++) {
+                //If the move passed to this method is in the list of legal moves
                 if (JSON.stringify(this.getLegalMoves(game)[x]) == JSON.stringify([j, i])) {
-                    // if (JSON.stringify(this.getValidMoves(game)[x]) == JSON.stringify([j, i])) {
+                    //Update flag
                     valid = true;
                 }
             }
         }
+        //If the move is valid
         if (valid) {
+            //Get new coordinates
             let newX = this.x + i;
             let newY = this.y + j;
-            //Variables for new coordinates
+            //If this hasn't moved
             if (!this.hasMoved) {
-                //If this hasn't moved
+                //If this is a pawn moving two spaces
                 if (this.type == "pawn" && Math.abs(j) == 2 && actualMove) {
-                    //If this is a pawn moving two spaces
+                    //Update ghost pawn flag
                     makeGhost = true;
-                    //Make a ghost pawn at the space it moved from
                 }
+                //If this is a king and it's castling
                 else if (this.type == "king" && Math.abs(i) > 1 && actualMove) {
-                    //If this is a king and it's castling
+                    //If this is going right
                     if (i > 0) {
-                        //If going right
-                        game = game.board[this.y][this.x + 3].move(0, -2, game, true, true, true, false);
                         //Move the rook that's to the right
+                        game = game.board[this.y][this.x + 3].move(0, -2, game, true, true, true, false);
                     }
+                    //If going left
                     else {
-                        //If going left
-                        game = game.board[this.y][this.x - 4].move(0, 3, game, true, true, true, false);
                         //Move the rook that's to the left
+                        game = game.board[this.y][this.x - 4].move(0, 3, game, true, true, true, false);
                     }
                 }
+                //Update moved flag
                 this.hasMoved = true;
             }
             //If the new space isn't empty and is an enemy
@@ -113,9 +118,10 @@ class Piece {
                 //Kill it
                 game = game.board[newY][newX].die(game, points, actualMove);
             }
+            //Update coordinate attributes
             this.x = newX;
             this.y = newY;
-            //Render the new positions of pieces
+            //Update 2D array
             game.update(actualMove);
             //If flag for ghost pawn is active, make one
             if (makeGhost) {
@@ -123,7 +129,8 @@ class Piece {
             }
             //If the move is to be put in the timeline
             if (append) {
-                let columns = [
+                //Array of letters for each column of board
+                const columns = [
                     "a",
                     "b",
                     "c",
@@ -133,6 +140,7 @@ class Piece {
                     "g",
                     "h"
                 ];
+                //Initialise string to contian move notation
                 let move = "";
                 //If castle
                 if (this.type == "king" && Math.abs(i) > 1) {
