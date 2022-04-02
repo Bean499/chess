@@ -2,6 +2,7 @@ const fs = require("fs");
 
 function readScoreboard() {
     let contents;
+    //contents = fs.readFileSync("scoreboard.json", "utf8");
     try {
         contents = fs.readFileSync("scoreboard.json", "utf8");
     }
