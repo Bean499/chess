@@ -95,9 +95,9 @@ function mousePressed() {
     }
     //This occurs when the user clicks outside of the board
     //so the only practical use is logging tests.
-    else {
-        OOBtest(game);
-    }
+    //else {
+        //OOBtest(game);
+    //}
 }
 
 function preload() {
