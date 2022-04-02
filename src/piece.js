@@ -425,7 +425,10 @@ class Piece {
     }
 
     //TESTED FULLY
-    renderPiece() {
+    renderPiece(renderGhosts) {
+        if (!renderGhosts && this.type == "ghost") {
+            return
+        }
         //Get coordinates of square in canvas
         let x = this.x * 60;
         let y = this.y * 60;
