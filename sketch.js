@@ -93,6 +93,11 @@ function mousePressed() {
             game = deselect(game);
         }
     }
+    //This occurs when the user clicks outside of the board
+    //so the only practical use is logging tests.
+    else {
+        OOBtest(game);
+    }
 }
 
 function preload() {
@@ -163,8 +168,8 @@ function draw() {
     p2TimerText = p2TimerMinutes + ":" + p2TimerSeconds
     if (p2TimeRemaining == 0) game.blackCheckmate = true;
 
-    if (game.players[0].name == "quinn") game.whiteCheckmate = true; 
-    if (game.players[1].name == "quinn") game.blackCheckmate = true; 
+    if (game.players[0].name == "quinn") game.whiteCheckmate = true;
+    if (game.players[1].name == "quinn") game.blackCheckmate = true;
 
     if (!game.blackCheckmate && !game.whiteCheckmate) {
         let turn;
