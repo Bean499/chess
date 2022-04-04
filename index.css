@@ -45,3 +45,8 @@ body {
   height: 480px;
   width: 480px;
 }
+
+#match-history {
+  margin-left: auto;
+  margin-right: auto;
+}
