@@ -19,7 +19,7 @@ class King extends Piece {
     castleCheck(game) {
         let moves = [];
         //If the king hasn't moved (necessary for castle)
-        if (!this.hasMoved) { 
+        if (!this.hasMoved && !this.checkCheck(game)) { 
             //If the space 3 to the right isn't empty
             if (game.board[this.y][this.x + 3] != null) {
                 //If the rook to the right of the king hasn't moved
