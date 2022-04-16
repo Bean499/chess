@@ -47,7 +47,7 @@ function mousePressed() {
     //Runs when mouse is pressed
     //mouseX and mouseY are co-ordinates relative to top left of canvas
     //If inside the canvas:
-    if (0 <= mouseY && mouseY <= 480 && 0 <= mouseX && mouseX <= 480) {
+    if (0 <= mouseY && mouseY <= 480 && 0 <= mouseX && mouseX <= 480 && !game.promoting) {
         //Check which space mouse is on
         space = [Math.floor(mouseY / 60), Math.floor(mouseX / 60)];
         //If the user clicks on a piece

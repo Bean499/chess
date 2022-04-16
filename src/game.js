@@ -30,6 +30,9 @@ class Game {
         this.whiteCheckmate = false;
         this.blackCheckmate = false;
 
+        //Flag for when promoting a piece
+        this.promoting = false;
+
         if (fillBoard) {
             this.newFilledBoard();
         }
@@ -126,6 +129,7 @@ class Game {
                         };
 
                         //Prompt popup, defaults to queen
+                        this.promoting = true;
                         dialogs.prompt(
                             "What type of piece should your pawn become?",
                             "queen",
@@ -141,6 +145,8 @@ class Game {
                                 this.pieces.push(objects[promote]);
                                 //Kill the pawn
                                 this.pieces[i].die(this, false);
+                                //Update promoting flag
+                                this.promoting = false;
                                 //Update
                                 this.update();
                             })
