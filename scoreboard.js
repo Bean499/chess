@@ -42,6 +42,8 @@ $("#profile-button").click(() => {
         //Get name of winner
         if (matches[i]["p1Win"]) winner = matches[i]["p1"];
         else winner = matches[i]["p2"];
+        //Empty Table
+        $("#match-history").html("<tr><th>Player 1</th><th>Player 2</th><th>Winner</th></tr>");
         //Add row to table
         $("#match-history").append("<tr><<td>" + matches[i]["p1"] + "</td><td>" + matches[i]["p2"] + "</td><td>" + winner + "</td></tr>");
     }
