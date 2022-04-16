@@ -7,6 +7,7 @@ function readScoreboard() {
         contents = fs.readFileSync("scoreboard.json", "utf8");
     }
     catch (err) {
+        console.log(err);
         contents = "[]";
     }
     return contents
